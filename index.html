@@ -13,9 +13,14 @@
     document.body.appendChild(renderer.view);
 
     PIXI.loader
+      .on('progress', progress)
       .add('./cat.png')
+      .add('./sheet.png')
       .load(setup);
-
+    
+    function progress(e, t){
+      console.log('Loading.. ' + e.progress + '%', arguments)
+    }
     function setup(){
         //Create a container object called the `stage`
         var stage = new PIXI.Container();
@@ -23,7 +28,23 @@
         var sprite = new PIXI.Sprite(PIXI.loader.resources['./cat.png'].texture);
 
         stage.addChild(sprite);
-        //Tell the `renderer` to `render` the `stage`
+
+        // sprite.x = 100;
+        // sprite.y = 100;
+        // sprite.anchor.x = 0.5;
+        // sprite.anchor.y = 0.5;
+        
+        var texture = PIXI.loader.resources['./sheet.png'].texture;
+
+        var rect = new PIXI.Rectangle(96, 64, 32, 32);
+        texture.frame = rect;
+
+        var rocket = new PIXI.Sprite(texture);
+        rocket.x = 32;
+        rocket.y = 32;
+
+        stage.addChild(rocket);
+
         renderer.render(stage);
     }
     
