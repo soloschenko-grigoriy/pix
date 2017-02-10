@@ -9,6 +9,7 @@
   <script type="text/javascript">
     var Sprite = PIXI.Sprite;
     var resources = PIXI.loader.resources;
+    var explorer, stage, state;
 
     //Create the renderer
     var renderer = PIXI.autoDetectRenderer(512, 512);
@@ -21,13 +22,13 @@
     
     function setup(){
         //Create a container object called the `stage`
-        var stage = new PIXI.Container();
+        stage = new PIXI.Container();
 
         
         var dungeon = new Sprite(resources["img/sheet.json"].textures["dungeon.png"]);
         stage.addChild(dungeon);
 
-        var explorer = new Sprite(resources["img/sheet.json"].textures["explorer.png"]);
+        explorer = new Sprite(resources["img/sheet.json"].textures["explorer.png"]);
         
         stage.addChild(explorer);
         explorer.x = 50;
@@ -44,8 +45,86 @@
         stage.addChild(treasure);
 
         renderer.render(stage);
+
+        explorer.vx = 0;
+        explorer.vy = 0;
+
+        
+        state = play;
+
+        document.addEventListener('keydown', function(e){
+          var key = e.keyCode;
+
+          if(key === 37){ // left 
+            moveLeft();
+          }else if(key === 38){ // up
+            moveUp();
+          }else if(key === 39){ // right
+            moveRight();
+          }else if(key === 40){ // down
+            moveDown();
+          }
+        });
+
+        document.addEventListener('keyup', function(e){
+          var key = e.keyCode;
+
+          if(key === 37){ // left 
+            stopMoveLeft();
+          }else if(key === 38){ // up
+            stopMoveUp();
+          }else if(key === 39){ // right
+            stopMoveRight();
+          }else if(key === 40){ // down
+            stopMoveDown();
+          }
+        });
+
+        gameLoop();
     }
-    
+
+    function gameLoop() {
+      requestAnimationFrame(gameLoop);
+      state();
+      renderer.render(stage);
+    }
+
+    function play() {
+      explorer.x += explorer.vx;
+      explorer.y += explorer.vy
+    }
+
+    function moveLeft(){
+      explorer.vx = -5;
+    }
+
+    function stopMoveLeft(){
+      explorer.vx = 0;
+    }
+
+    function moveRight(){
+      explorer.vx = 5;
+    }
+
+    function stopMoveRight(){
+      explorer.vx = 0;
+    }
+
+    function moveUp(){
+      explorer.vy = -5;
+    }
+
+    function stopMoveUp(){
+      explorer.vy = 0;
+    }
+
+    function moveDown(){
+      explorer.vy = 5;
+    }
+
+    function stopMoveDown(){
+      explorer.vy = 0;
+    }
   </script>
 </body>
 </html>
