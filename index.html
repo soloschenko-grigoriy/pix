@@ -7,43 +7,41 @@
   <script src="node_modules/pixi.js/dist/pixi.min.js"></script>
 <body>
   <script type="text/javascript">
+    var Sprite = PIXI.Sprite;
+    var resources = PIXI.loader.resources;
+
     //Create the renderer
-    var renderer = PIXI.autoDetectRenderer(256, 256);
+    var renderer = PIXI.autoDetectRenderer(512, 512);
     //Add the canvas to the HTML document
     document.body.appendChild(renderer.view);
 
     PIXI.loader
-      .on('progress', progress)
-      .add('./cat.png')
-      .add('./sheet.png')
+      .add('img/sheet.json')
       .load(setup);
     
-    function progress(e, t){
-      console.log('Loading.. ' + e.progress + '%', arguments)
-    }
     function setup(){
         //Create a container object called the `stage`
         var stage = new PIXI.Container();
 
-        var sprite = new PIXI.Sprite(PIXI.loader.resources['./cat.png'].texture);
-
-        stage.addChild(sprite);
-
-        // sprite.x = 100;
-        // sprite.y = 100;
-        // sprite.anchor.x = 0.5;
-        // sprite.anchor.y = 0.5;
         
-        var texture = PIXI.loader.resources['./sheet.png'].texture;
+        var dungeon = new Sprite(resources["img/sheet.json"].textures["dungeon.png"]);
+        stage.addChild(dungeon);
 
-        var rect = new PIXI.Rectangle(96, 64, 32, 32);
-        texture.frame = rect;
+        var explorer = new Sprite(resources["img/sheet.json"].textures["explorer.png"]);
+        
+        stage.addChild(explorer);
+        explorer.x = 50;
+        explorer.y = dungeon.height / 2 - explorer.height/2;
 
-        var rocket = new PIXI.Sprite(texture);
-        rocket.x = 32;
-        rocket.y = 32;
+        var door = new Sprite(resources["img/sheet.json"].textures["door.png"]);
+        door.x = dungeon.width / 2 - door.width / 2;
+        door.y = dungeon.height - door.height * 2;
+        stage.addChild(door);
 
-        stage.addChild(rocket);
+        var treasure = new Sprite(resources["img/sheet.json"].textures["treasure.png"]);
+        treasure.x = dungeon.width - 100;
+        treasure.y = dungeon.height /2 - treasure.height /2;
+        stage.addChild(treasure);
 
         renderer.render(stage);
     }
