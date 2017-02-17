@@ -3,49 +3,16 @@
 <head>
   <meta charset="utf-8">
   <title>Hello World</title>
-</head>
-  <script src="node_modules/pixi.js/dist/pixi.min.js"></script>
-<body>
-  <script type="text/javascript">
-    var Sprite = PIXI.Sprite;
-    var resources = PIXI.loader.resources;
-
-    //Create the renderer
-    var renderer = PIXI.autoDetectRenderer(512, 512);
-    //Add the canvas to the HTML document
-    document.body.appendChild(renderer.view);
-
-    PIXI.loader
-      .add('img/sheet.json')
-      .load(setup);
-    
-    function setup(){
-        //Create a container object called the `stage`
-        var stage = new PIXI.Container();
-
-        
-        var dungeon = new Sprite(resources["img/sheet.json"].textures["dungeon.png"]);
-        stage.addChild(dungeon);
-
-        var explorer = new Sprite(resources["img/sheet.json"].textures["explorer.png"]);
-        
-        stage.addChild(explorer);
-        explorer.x = 50;
-        explorer.y = dungeon.height / 2 - explorer.height/2;
-
-        var door = new Sprite(resources["img/sheet.json"].textures["door.png"]);
-        door.x = dungeon.width / 2 - door.width / 2;
-        door.y = dungeon.height - door.height * 2;
-        stage.addChild(door);
-
-        var treasure = new Sprite(resources["img/sheet.json"].textures["treasure.png"]);
-        treasure.x = dungeon.width - 100;
-        treasure.y = dungeon.height /2 - treasure.height /2;
-        stage.addChild(treasure);
-
-        renderer.render(stage);
+  <script src="/dist/pirates.js"></script>
+  <style>
+    body,html{
+      margin: 0;
+      padding: 0;
     }
-    
-  </script>
+  </style>
+</head>
+  
+<body>
+  
 </body>
 </html>
