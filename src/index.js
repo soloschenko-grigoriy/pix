@@ -7,7 +7,7 @@ var app          = new PIXI.Application(800, 600, { backgroundColor: 0x1099bb}),
     AnimatedSprite = PIXI.extras.AnimatedSprite,
     TilingSprite = PIXI.extras.TilingSprite;
 
-var stage, anim, stopped, graphics = new PIXI.Graphics();
+var stage, anim, stopped;
 
 Loader
     .add('img/sea.png')
