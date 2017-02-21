@@ -1,13 +1,13 @@
-var PIXI         = require("../node_modules/pixi.js/dist/pixi.min");
+var PIXI         = window.PIXI;
 var app          = new PIXI.Application(800, 600, { backgroundColor: 0x1099bb}),
     Container    = PIXI.Container,
     Sprite       = PIXI.Sprite,
     Loader       = PIXI.loader,
     Texture      = PIXI.Texture,
-    AnimatedSprite = PIXI.extras.AnimatedSprite,
-    TilingSprite = PIXI.extras.TilingSprite;
+    AnimatedSprite = PIXI.extras.AnimatedSprite;
+    // TilingSprite = PIXI.extras.TilingSprite;
 
-var stage, anim, stopped;
+var stage, anim, stopped, bg;
 
 Loader
     .add('img/sea.png')
@@ -22,11 +22,14 @@ function init(){
     document.body.appendChild(app.view);
     app.stage.addChild(stage);
     
-    var bg = new TilingSprite(
-        Loader.resources["img/sea.png"].texture, 
-        app.renderer.width,
-        app.renderer.height
-    );
+    // var bg = new TilingSprite(
+    //     Loader.resources["img/sea.png"].texture,
+    //     2000,
+    //     2000
+    // );
+    bg = new Sprite(Loader.resources["img/sea.png"].texture);
+    bg.position.x = 0;
+    bg.position.y = 0;
 
     stage.addChild(bg);
     var i;
@@ -47,6 +50,9 @@ function init(){
     stopped = new Sprite( Loader.resources["img/ship1-stop.png"].texture);
     stopped.anchor.set(0.5);
     stopped.visible = false;
+    stopped.scale.x = 0.5;
+    stopped.scale.y = 0.5;
+    stopped.visible = true;
     app.stage.addChild(stopped);
 
     anim = new AnimatedSprite(frames);
@@ -56,13 +62,11 @@ function init(){
     anim.gotoAndStop(7);
     anim.rotation = -Math.PI/3;
     anim.animationSpeed = 0.2;
-
+    anim.scale.x = 0.5;
+    anim.scale.y = 0.5;
+    anim.visible = false;
     app.stage.addChild(anim);
-    
-    // var graphics1 = new PIXI.Graphics();
-    // graphics1.lineStyle(4, 0xffd900, 1);
-    // graphics1.drawRect(50, 50, app.view.width - 100, app.view.height - 100);
-    // app.stage.addChild(graphics1);
+
 
     anim.vx = 0;
     anim.vy = 0;
@@ -70,6 +74,8 @@ function init(){
     anim.isStopping = false;
     anim.isAccelerating = false;
 
+    bg.vx = 0;
+    bg.vy = 0;
     gameLoop();
 
     document.addEventListener('keydown', (e) => {
@@ -77,19 +83,24 @@ function init(){
         e.preventDefault();
 
         if(e.keyCode === 37){ // left 
-            anim.rotation -= 0.05;         
+            anim.rotation -= 0.05;    
+            bg.vx = 1;
         }else if(e.keyCode === 38){ // up  
+            bg.y += 1;
             if(anim.isAccelerating){ return;}
             anim.isStopping = false;          
             anim.isAccelerating = true;
             anim.vx = 1;
             anim.vy = 1;
+            bg.vx = 1;
         }else if(e.keyCode === 39){ // right
             anim.rotation += 0.05;
+            bg.vx = -1;
         }else if(e.keyCode === 40){ // down
             if(anim.isStopping){return;}
             anim.isAccelerating = false;
             anim.isStopping = true;
+            bg.vy = -1;
         }
     }); 
 
@@ -152,6 +163,15 @@ function gameLoop(){
     // graphics.lineStyle(4, 0xff0000, 1);
     // graphics.drawRect(anim.getBounds().x, anim.getBounds().y, anim.getBounds().width, anim.getBounds().height);
     // app.stage.addChild(graphics);
+    if(bg.position.y > -936 && bg.position.y < 0){
+        bg.y += bg.vy;
+    }
 
+    if(bg.position.x > -1248 && bg.position.x < 0){
+        bg.x += bg.vx;
+    }
+    
+
+    // app.render(bg);
     app.render(stage);
 }
