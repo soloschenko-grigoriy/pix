@@ -3,6 +3,8 @@ var Sprite          = window.PIXI.Sprite,
     Texture         = window.PIXI.Texture,
     AnimatedSprite  = window.PIXI.extras.AnimatedSprite;
 
+import Bullet from './bullet';
+
 export default class Ship{
     constructor(params){
         this._bodyHp    = params.bodyHp || 100;
@@ -95,15 +97,8 @@ export default class Ship{
         this.anim.isStopping = false;
         this.anim.isAccelerating = false;
 
-        this.cannonbBall = new Sprite( Loader.resources["assets/img/cannon-ball.png"].texture);
-        this.cannonbBall.scale.set(0.3);
-        this.cannonbBall.anchor.set(0.5);
-        this.cannonbBall.x = 300;
-        this.cannonbBall.y = 300;
-        this._stage.addChild(this.cannonbBall);
-
         this.addListeners();
-
+        requestAnimationFrame(this.update.bind(this));
     }
 
     addListeners(){
@@ -123,6 +118,9 @@ export default class Ship{
                 // bg.vx = -1;
             }else if(e.keyCode === 40){ // down
                 this.rotate('down');
+                // bg.vy = -1;
+            }else if(e.keyCode === 32){ // down
+                this.shoot();
                 // bg.vy = -1;
 
             }
@@ -183,6 +181,16 @@ export default class Ship{
 
     }
 
+    shoot(){
+        new Bullet({
+            stage: this.stage,
+            x: this.anim.x,
+            y: this.anim.y,
+            endX: 100,
+            endY: 100
+        });
+    }
+
     update(){
         if(this.anim.isStopping){
             this.anim.vx -= 0.03;
@@ -235,7 +243,6 @@ export default class Ship{
         //     bg.x += bg.vx;
         // }
 
-        // this.cannonbBall.x += 2;
-        // this.cannonbBall.y += 2;
+        requestAnimationFrame(this.update.bind(this));
     }
 }

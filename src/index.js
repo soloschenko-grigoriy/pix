@@ -22,16 +22,4 @@ function init(){
     toUpdate.push(new Ship({ stage: stage }));
 
     document.body.appendChild(app.view);
-
-    gameLoop();
-}
-
-function gameLoop(){
-    requestAnimationFrame(gameLoop);
-
-    for(var i in toUpdate){
-        toUpdate[i].update();
-    }
-    
-    app.render(stage);
 }

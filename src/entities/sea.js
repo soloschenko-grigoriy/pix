@@ -26,9 +26,11 @@ export default class Sea{
 
     render(){
         this.stage.addChild(this.elm);
+
+        requestAnimationFrame(this.update.bind(this));
     }
 
     update(){
-
+        requestAnimationFrame(this.update.bind(this));
     }
 }
