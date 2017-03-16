@@ -1,12 +1,11 @@
-var app          = new window.PIXI.Application(800, 600, { backgroundColor: 0x1099bb}),
+var app          = new window.PIXI.Application(800, 600, { backgroundColor: 0x1099bb, antialias: true}),
     Container    = window.PIXI.Container,
     Loader       = window.PIXI.loader;
 
 import Ship from './entities/ship';
 import Sea from './entities/sea';
 
-var stage    = new Container(), 
-    toUpdate = [];
+
 
 Loader
     .add('assets/img/sea.png')
@@ -16,10 +15,12 @@ Loader
     .load(init);
 
 function init(){
+    var stage = new Container();
+     
     app.stage.addChild(stage);    
 
-    toUpdate.push(new Sea({ stage: stage }));
-    toUpdate.push(new Ship({ stage: stage }));
+    new Sea({ stage: stage });
+    new Ship({ stage: stage });
 
     document.body.appendChild(app.view);
 }

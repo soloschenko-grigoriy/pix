@@ -9,12 +9,12 @@ import Bullet from './bullet';
 
 export default class Ship{
     constructor(params){
-        this.bodyHp    = params.bodyHp  || 100;
-        this.sailHp    = params.sailHp  || 100;
-        this.bullets   = params.bullets || 0;
-        this.speed     = params.speed   || 1;
-        
-        this._oldBodyHp = params.bodyHp  || 100;
+        this.bodyHp     = params.bodyHp  || 100;
+        this.sailHp     = params.sailHp  || 100;
+        this.bullets    = params.bullets || 0;
+        this.speed      = params.speed   || 1;
+        this.gamageZone = params.gamageZone || 1;
+
         this._currentBodyHp = params.bodyHp  || 100;
 
         this.stage = params.stage;
@@ -67,21 +67,34 @@ export default class Ship{
         this._stage = value;
     }
 
+
+    get damageZone(){
+        return this._damageZone;
+    }
+
+    set damageZone(value){
+        this._damageZone = value;
+    }
+
     render(){
         this.container = new Container();
         this.container.x = 300;
         this.container.y = 300;
         this.container.vx = 0;
         this.container.vy = 0;
-        // this.container.vr = 0;
 
-        this.elm = this.renderMoving();
-        this.stopped = this.renderStopped();
-       
-        this.isStopping = false;
+        this.isStopping     = false;
         this.isAccelerating = false;
 
-        this.hp = this.renderHP(1);
+        this.elm     = this.renderMoving();
+        this.stopped = this.renderStopped();
+        this.hp      = this.renderHP();
+        this.dz      = this.renderDamageZone();
+
+        this.container.addChild(this.hp);
+        this.container.addChild(this.dz);
+        this.container.addChild(this.stopped);
+        this.container.addChild(this.elm);
 
         this.addListeners();
 
@@ -96,8 +109,6 @@ export default class Ship{
         sprite.scale.set(0.3);
         sprite.rotation = -Math.PI/3;
         sprite.visible = true;
-
-        this.container.addChild(sprite);
 
         return sprite;
     }
@@ -116,31 +127,59 @@ export default class Ship{
         sprite.animationSpeed = 0.2;
         sprite.visible = false;
 
-        this.container.addChild(sprite);
-
         return sprite;
     }
 
     renderHP(){
-        var graphics = this.graphics || new Graphics();
+        var hp = this.hp || new Graphics();
         var w = 80;
         var h = 5;
-
-        graphics.beginFill(0xffffff);
-        graphics.drawRect(this.elm.x - w/2, this.elm.y - 40, w, h);
-        graphics.endFill();
-
-        graphics.beginFill(0xe74c3c);
-        graphics.drawRect(this.elm.x - w/2, this.elm.y - 40, w * this._currentBodyHp / 100, h);
-        graphics.endFill();
-
         
-        this.container.addChild(graphics);
+        hp.clear();
 
-        return graphics;
+        hp.beginFill(0xffffff);
+        hp.drawRect(this.elm.x - w/2, this.elm.y - 50, w, h);
+        hp.endFill();
+
+        hp.beginFill(0xe74c3c);
+        hp.drawRect(this.elm.x - w/2, this.elm.y - 50, w * this._currentBodyHp / 100, h);
+        hp.endFill();
+
+        return hp;
+    }
+
+    renderDamageZone(){
+        var dz = new Container();
+        var graphics = new Graphics();
+        
+        graphics.beginFill(0xe74c3c, 0.3);
+        graphics.lineStyle(2, 0x00ff00, 0.5);
+        graphics.drawCircle(this.elm.x, this.elm.y, 100 * this.gamageZone);
+        graphics.endFill();
+        
+        
+        dz.visible = true;
+        dz.addChild(graphics);
+
+        return dz;
+    }
+
+    showDmageZone(){
+        this.dz.visible = true;
+
+        return this;
+    }
+
+    hideDmageZone(){
+        this.dz.visible = false;
+
+        return this;
     }
 
     addListeners(){
+        document.addEventListener('click', () => {
+            this.showDmageZone();
+        });
         document.addEventListener('keydown', (e) => {
             e.stopPropagation();
             e.preventDefault();
@@ -215,8 +254,8 @@ export default class Ship{
     shoot(){
         new Bullet({
             stage: this.stage,
-            x: this.elm.x,
-            y: this.elm.y,
+            x: this.container.x,
+            y: this.container.y,
             endX: 100,
             endY: 100
         });
