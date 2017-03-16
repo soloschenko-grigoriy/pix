@@ -17,13 +17,15 @@ export default class Ship{
 
         this._currentBodyHp = params.bodyHp  || 100;
 
+        this.isEnemy = params.isEnemy || false;
+        
         this.stage = params.stage;
 
         if(params.noAutoRender){
             return;
         }
 
-        this.render();
+        this.render(params);
     }
 
 
@@ -67,7 +69,6 @@ export default class Ship{
         this._stage = value;
     }
 
-
     get damageZone(){
         return this._damageZone;
     }
@@ -76,10 +77,18 @@ export default class Ship{
         this._damageZone = value;
     }
 
-    render(){
+    get isEnemy(){
+        return this._isEnemy;
+    }
+
+    set isEnemy(value){
+        this._isEnemy = value;
+    }
+
+    render(params){
         this.container = new Container();
-        this.container.x = 300;
-        this.container.y = 300;
+        this.container.x = params.x || 300;
+        this.container.y = params.y || 300;
         this.container.vx = 0;
         this.container.vy = 0;
 
@@ -151,9 +160,13 @@ export default class Ship{
     renderDamageZone(){
         var dz = new Container();
         var graphics = new Graphics();
-        
+        var lineColor = 0x00ff00;
+
+        if(this.isEnemy){
+            lineColor = 0xff0000;
+        }
         graphics.beginFill(0xe74c3c, 0.3);
-        graphics.lineStyle(2, 0x00ff00, 0.5);
+        graphics.lineStyle(2, lineColor, 0.5);
         graphics.drawCircle(this.elm.x, this.elm.y, 100 * this.gamageZone);
         graphics.endFill();
         

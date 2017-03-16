@@ -21,6 +21,8 @@ function init(){
 
     new Sea({ stage: stage });
     new Ship({ stage: stage });
+    new Ship({ stage: stage, x: 500, y: 500, bodyHp: 50, isEnemy: true });
+    new Ship({ stage: stage, x: 450, y: 250, bodyHp: 90, isEnemy: true });
 
     document.body.appendChild(app.view);
 }
