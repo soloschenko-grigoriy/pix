@@ -20,9 +20,9 @@ function init(){
     app.stage.addChild(stage);    
 
     new Sea({ stage: stage });
-    new Ship({ stage: stage });
-    new Ship({ stage: stage, x: 500, y: 500, bodyHp: 50, isEnemy: true });
-    new Ship({ stage: stage, x: 450, y: 250, bodyHp: 90, isEnemy: true });
+    new Ship({ stage: stage, isActive: true });
+    new Ship({ stage: stage, x: 500, y: 500, bodyHp: 50, isEnemy: true, isActive: false });
+    // new Ship({ stage: stage, x: 450, y: 250, bodyHp: 90, isEnemy: true, isActive: false });
 
     document.body.appendChild(app.view);
 }
