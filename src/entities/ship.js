@@ -14,6 +14,8 @@ export default class Ship{
         this.bullets    = params.bullets || 0;
         this.speed      = params.speed   || 1;
         this.damageZone = params.damageZone || 1;
+        
+        this.id = params.id; // @todo
 
         this._currentBodyHp = params.bodyHp  || 100;
 
@@ -22,6 +24,13 @@ export default class Ship{
         
         this.stage = params.stage;
 
+        this.container = new Container();
+        this.container.x = params.x || 300;
+        this.container.y = params.y || 300;
+        this.container.vx = 0;
+        this.container.vy = 0;
+
+        this.toAttack = {};
         if(params.noAutoRender){
             return;
         }
@@ -86,13 +95,15 @@ export default class Ship{
         this._isEnemy = value;
     }
 
-    render(params){
-        this.container = new Container();
-        this.container.x = params.x || 300;
-        this.container.y = params.y || 300;
-        this.container.vx = 0;
-        this.container.vy = 0;
+    get toAttack(){
+        return this._toAttack;
+    }
 
+    set toAttack(value){
+        this._toAttack = value;
+    }
+
+    render(){
         this.isStopping     = false;
         this.isAccelerating = false;
 
@@ -100,26 +111,18 @@ export default class Ship{
         this.stopped = this.renderStopped();
         this.hp      = this.renderHP();
         this.dz      = this.renderDamageZone();
-        
+        this.collidePoints = this.renderCollidePoints();
         
         this.container.addChild(this.hp);
         this.container.addChild(this.dz);
         this.container.addChild(this.stopped);
         this.container.addChild(this.elm);
-        this.container.addChild(this.renderCollidePoints());
-        // console.log(this.elm.calculateVertices());
-        // console.log(this.elm.filterArea);
-        this.addInputListeners();
+        this.container.addChild(this.collidePoints);
 
+        this.addInputListeners();
         this.stage.addChild(this.container);
-        
+
         requestAnimationFrame(this.update.bind(this));
-        this.elm.interactive = true;
-        this.elm.on('click', (e) =>{
-            var position = e.data.getLocalPosition(this.stage);
-            // console.log(this.container.position.x, this.container.position.y);
-            console.log(position.x - this.container.x, position.y - this.container.y);
-        });
     }
 
     renderStopped(){
@@ -155,63 +158,41 @@ export default class Ship{
     }
 
     renderCollidePoints(){
-        var dz = new Container();
-        
-        var cpC = new Graphics();
-        cpC.beginFill(0x000000);
-        cpC.drawCircle(this.elm.x, this.elm.y, 1);
-        cpC.endFill();
-        dz.addChild(cpC);
+        var container = new Container();
+        this.cps = [{
+            x: - 22, 
+            y: - 13
+        },{
+            x: + 23, 
+            y: + 12
+        },{
+            x: - 5, 
+            y: + 8
+        },{
+            x: + 5, 
+            y: - 9
+        },{
+            x: - 15, 
+            y: 0
+        },{
+            x: - 8, 
+            y: - 14
+        },{
+            x: + 8, 
+            y: + 12
+        },{
+            x: + 15, 
+            y: 0
+        }];
 
-        var cp1 = new Graphics();
-        cp1.beginFill(0x000000);
-        cp1.drawCircle(this.elm.x - 22, this.elm.y - 13, 1);
-        cp1.endFill();
-        dz.addChild(cp1);
-
-        var cp2 = new Graphics();
-        cp2.beginFill(0x000000);
-        cp2.drawCircle(this.elm.x + 23, this.elm.y + 12, 1);
-        cp2.endFill();
-        dz.addChild(cp2);
-
-        var cp3 = new Graphics();
-        cp3.beginFill(0x000000);
-        cp3.drawCircle(this.elm.x - 5, this.elm.y + 8, 1);
-        cp3.endFill();
-        dz.addChild(cp3);
-
-        var cp4 = new Graphics();
-        cp4.beginFill(0x000000);
-        cp4.drawCircle(this.elm.x + 5, this.elm.y - 9, 1);
-        cp4.endFill();
-        dz.addChild(cp4);
-
-        var cp5 = new Graphics();
-        cp5.beginFill(0x000000);
-        cp5.drawCircle(this.elm.x - 15, this.elm.y, 1);
-        cp5.endFill();
-        dz.addChild(cp5);
-
-        var cp6 = new Graphics();
-        cp6.beginFill(0x000000);
-        cp6.drawCircle(this.elm.x - 8, this.elm.y - 14, 1);
-        cp6.endFill();
-        dz.addChild(cp6);
-
-        var cp7 = new Graphics();
-        cp7.beginFill(0x000000);
-        cp7.drawCircle(this.elm.x + 8, this.elm.y + 12, 1);
-        cp7.endFill();
-        dz.addChild(cp7);
-
-        var cp8 = new Graphics();
-        cp8.beginFill(0x000000);
-        cp8.drawCircle(this.elm.x + 15, this.elm.y, 1);
-        cp8.endFill();
-        dz.addChild(cp8);
-
-        return dz;
+        for(let i in this.cps){
+            let cp = new Graphics();
+            cp.beginFill(0x000000);
+            cp.drawCircle(this.elm.x + this.cps[i].x, this.elm.y + this.cps[i].y, 1);
+            cp.endFill();
+            container.addChild(cp);
+        }
+        return container;
     }
 
     renderHP(){
@@ -314,10 +295,12 @@ export default class Ship{
     }
 
     _rotateLeft(){
+        this.collidePoints.rotation -= 0.05;
         this.elm.rotation -= 0.05;  
     }
 
     _rotateRight(){
+        this.collidePoints.rotation += 0.05;
         this.elm.rotation += 0.05;
         
     }
@@ -326,8 +309,8 @@ export default class Ship{
         if(this.isAccelerating){ return;}
         this.isStopping = false;          
         this.isAccelerating = true;
-        this.vx = 1;
-        this.vy = 1;
+        this.vx = 0.5;
+        this.vy = 0.5;
     }
 
     _rotateDown(){
@@ -341,13 +324,16 @@ export default class Ship{
     }
 
     shoot(){
-        new Bullet({
-            stage: this.stage,
-            x: this.container.x,
-            y: this.container.y,
-            endX: 100,
-            endY: 100
-        });
+        for(var i in this.toAttack){
+            new Bullet({
+                stage: this.stage,
+                x: this.container.x,
+                y: this.container.y,
+                endX: this.toAttack[i].container.x,
+                endY: this.toAttack[i].container.y
+            });
+        }
+        
     }
 
     update(){
@@ -412,20 +398,40 @@ export default class Ship{
         // }
 
         // Math.sqrt((x1-x0)*(x1-x0) + (y1-y0)*(y1-y0)) < r
+        
+        // for(let i = 0; i < this.collidePoints.children.length; i++){
+
+        // }
+        
+        if(!this.isActive){
+            return this;
+        }
+
+        let active = this;
+        for(let key in this.stage.ships){
+            let enemy = this.stage.ships[key];
+            
+            if(!enemy.isActive){
+                enemy.stopped.alpha = 1;
+                enemy.elm.alpha = 1;
+
+                delete this.toAttack[enemy.id];
+
+                for(let i = 0; i < this.cps.length; i++){
+                    let x = enemy.container.x + enemy.cps[i].x;
+                    let y = enemy.container.y + enemy.cps[i].y;
+                    let d = Math.sqrt(Math.pow(x - active.container.x, 2) + Math.pow(y - active.container.y, 2));
+                    
+                    if(d < 100 * active.damageZone){
+                        enemy.stopped.alpha = 0.5;
+                        enemy.elm.alpha = 0.5;
+                        active.toAttack[enemy.id] = enemy;
+                    }
+                }
+                
+            }
+        }
+
         requestAnimationFrame(this.update.bind(this));
     }
 }
-
-// GAME.CollisionManager.prototype.playerVsPickup = function(){		
-//     var pickups = this.engine.pickupManager.pickups;	
-//     var steve = this.engine.steve; // yes, he is called steve 		
-//     for (var i = 0; i < pickups.length; i++) 	{		
-//         var pickup = pickups[i];		
-//         var xdist = pickup.position.x - steve.position.x;		
-//         if(xdist > -pickup.width/2 && xdist < pickup.width/2){			
-//             var ydist = pickup.position.y - steve.position.y;					
-//             if(ydist > -pickup.height/2 && ydist < pickup.height/2){ // HIT CODE!!   			
-//             }		
-//         }	
-//     }
-// };

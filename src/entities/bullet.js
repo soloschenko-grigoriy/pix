@@ -59,7 +59,7 @@ export default class Bullet{
             this.elm.x += this.vx;
             this.elm.y += this.vy;
 
-            if(Math.sqrt(Math.pow(this.elm.y-this.startX,2)+Math.pow(this.elm.y-this.startY,2)) >= this.distance){
+            if(Math.sqrt(Math.pow(this.elm.x-this.startX,2)+Math.pow(this.elm.y-this.startY,2)) > this.distance){
                 this.moving = false;
                 this.destroy();
             }
