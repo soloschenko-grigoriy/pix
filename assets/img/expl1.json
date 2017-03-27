@@ -1,0 +1,84 @@
+{"frames": {
+
+"explosion effect0001.png":
+{
+	"frame": {"x":1,"y":1355,"w":137,"h":121},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":303,"y":310,"w":137,"h":121},
+	"sourceSize": {"w":702,"h":639},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"explosion effect0002.png":
+{
+	"frame": {"x":1159,"y":1073,"w":517,"h":464},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":114,"y":122,"w":517,"h":464},
+	"sourceSize": {"w":702,"h":639},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"explosion effect0003.png":
+{
+	"frame": {"x":1225,"y":537,"w":573,"h":534},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":88,"y":81,"w":573,"h":534},
+	"sourceSize": {"w":702,"h":639},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"explosion effect0004.png":
+{
+	"frame": {"x":642,"y":1,"w":632,"h":581},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":52,"y":51,"w":632,"h":581},
+	"sourceSize": {"w":702,"h":639},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"explosion effect0005.png":
+{
+	"frame": {"x":1,"y":705,"w":648,"h":592},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":42,"y":47,"w":648,"h":592},
+	"sourceSize": {"w":702,"h":639},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"explosion effect0006.png":
+{
+	"frame": {"x":595,"y":705,"w":647,"h":562},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":55,"y":77,"w":647,"h":562},
+	"sourceSize": {"w":702,"h":639},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"explosion effect0007.png":
+{
+	"frame": {"x":1,"y":1,"w":702,"h":639},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":702,"h":639},
+	"sourceSize": {"w":702,"h":639},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"explosion effect0008.png":
+{
+	"frame": {"x":1225,"y":1,"w":587,"h":534},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":115,"y":77,"w":587,"h":534},
+	"sourceSize": {"w":702,"h":639},
+	"pivot": {"x":0.5,"y":0.5}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "expl1.png",
+	"format": "RGBA8888",
+	"size": {"w":1813,"h":1538},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:ec72b2e768415ad519f563ff5ef9cc7d:69955a916875b4835d31ad333e50c463:a0ddfa4c234d1e439e8f71024b9fde5d$"
+}
+}

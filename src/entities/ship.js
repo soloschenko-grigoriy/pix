@@ -131,7 +131,6 @@ export default class Ship{
         sprite.scale.set(0.3);
         sprite.rotation = -Math.PI/3;
         sprite.visible = false;
-
         return sprite;
     }
 
@@ -148,7 +147,6 @@ export default class Ship{
         sprite.rotation = -Math.PI/3;
         sprite.animationSpeed = 0.2;
         sprite.visible = true;
-
         var x = new Graphics();
         x.beginFill(0xffffff);
         x.drawRect();
@@ -320,7 +318,40 @@ export default class Ship{
     }
 
     destroy(){
+        let frames = [];
+        for (let i = 1; i <= 8; i++) {
+            let key = i;
+            if(i < 10){
+                key = '0' + i;
+            }
+            frames.push(window.PIXI.Texture.fromFrame('explosion effect00' + key + '.png'));
+        }
 
+        let expl = new window.PIXI.extras.AnimatedSprite(frames);
+        expl.scale.set(0.2);
+        expl.anchor.set(0.5);
+        expl.position.set(this.container.x, this.container.y);
+        expl.animationSpeed = 0.2;
+        expl.loop = false;
+
+        this.stage.addChild(expl);
+        expl.play();
+
+        delete this.stage.ships[this.id];
+
+        let ships = [];
+        for(let i in this.stage.ships){
+            if(this.stage.ships[i] !== this){
+                ships.push(this.stage.ships[i]);
+            }
+        }
+
+        this.stage.ships = ships;
+        this.stage.removeChild(this.container);
+
+        expl.onComplete = (() => {
+            this.stage.removeChild(expl);
+        });
     }
 
     shoot(){
@@ -330,10 +361,36 @@ export default class Ship{
                 x: this.container.x,
                 y: this.container.y,
                 endX: this.toAttack[i].container.x,
-                endY: this.toAttack[i].container.y
+                endY: this.toAttack[i].container.y,
+                endElm: this.toAttack[i]
             });
         }
         
+    }
+
+    makeDamage(damage){
+        let frames = [];
+        for (let i = 1; i <= 8; i++) {
+            let key = i;
+            if(i < 10){
+                key = '0' + i;
+            }
+            frames.push(window.PIXI.Texture.fromFrame('explosion effect_100' + key + '.png'));
+        }
+
+        let expl = new window.PIXI.extras.AnimatedSprite(frames);
+        expl.scale.set(0.5);
+        expl.anchor.set(0.5);
+        expl.position.set(this.container.x, this.container.y);
+        expl.animationSpeed = 0.2;
+        expl.loop = false;
+
+        this.stage.addChild(expl);
+        expl.play();
+        this.bodyHp -= damage;
+        expl.onComplete = (() => {
+            this.stage.removeChild(expl);
+        });
     }
 
     update(){
@@ -373,6 +430,9 @@ export default class Ship{
         this.container.y = this.container.y - this.container.vy * Math.cos(this.elm.rotation);
         
         if(this.bodyHp !== this._currentBodyHp){ // hp been changed
+            if(this.bodyHp <= 0){
+                return this.destroy();
+            }
             if(this.bodyHp < this._currentBodyHp){
                 this._currentBodyHp = this._currentBodyHp - 1;
             }else{
@@ -403,10 +463,16 @@ export default class Ship{
 
         // }
         
+        this.detectEnemies();
+        requestAnimationFrame(this.update.bind(this));
+    }
+
+
+    detectEnemies(){
         if(!this.isActive){
             return this;
         }
-
+        this.toAttack = [];
         let active = this;
         for(let key in this.stage.ships){
             let enemy = this.stage.ships[key];
@@ -431,7 +497,5 @@ export default class Ship{
                 
             }
         }
-
-        requestAnimationFrame(this.update.bind(this));
     }
 }

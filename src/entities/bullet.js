@@ -13,6 +13,8 @@ export default class Bullet{
         this.endX = params.endX;
         this.endY = params.endY;
 
+        this.endElm = params.endElm;
+
         this.speed = 5;
 
         this.stage = params.stage;     
@@ -43,12 +45,13 @@ export default class Bullet{
 
         this.moving = true;
 
-        this.stage.addChild(this.elm);
+        this.stage.addChildAt(this.elm, 1);
 
         requestAnimationFrame(this.update.bind(this));
     }
 
     destroy(){
+        this.endElm.makeDamage(10);
         this.stage.removeChild(this.elm);
     }
 

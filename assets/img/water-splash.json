@@ -1,0 +1,156 @@
+{"frames": {
+
+"water splash effect0001.png":
+{
+	"frame": {"x":91,"y":157,"w":63,"h":66},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":23,"y":12,"w":63,"h":66},
+	"sourceSize": {"w":94,"h":98},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"water splash effect0002.png":
+{
+	"frame": {"x":92,"y":86,"w":69,"h":74},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":14,"y":8,"w":69,"h":74},
+	"sourceSize": {"w":94,"h":98},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"water splash effect0003.png":
+{
+	"frame": {"x":1,"y":189,"w":76,"h":76},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":10,"y":3,"w":76,"h":76},
+	"sourceSize": {"w":94,"h":98},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"water splash effect0004.png":
+{
+	"frame": {"x":1,"y":100,"w":88,"h":87},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":4,"y":0,"w":88,"h":87},
+	"sourceSize": {"w":94,"h":98},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"water splash effect0005.png":
+{
+	"frame": {"x":1,"y":1,"w":89,"h":97},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":1,"w":89,"h":97},
+	"sourceSize": {"w":94,"h":98},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"water splash effect0006.png":
+{
+	"frame": {"x":143,"y":222,"w":60,"h":59},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":17,"y":19,"w":60,"h":59},
+	"sourceSize": {"w":94,"h":98},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"water splash effect0007.png":
+{
+	"frame": {"x":79,"y":222,"w":64,"h":62},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":19,"y":9,"w":64,"h":62},
+	"sourceSize": {"w":94,"h":98},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"water splash effect0008.png":
+{
+	"frame": {"x":173,"y":1,"w":73,"h":76},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":20,"y":3,"w":73,"h":76},
+	"sourceSize": {"w":94,"h":98},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"water splash effect0009.png":
+{
+	"frame": {"x":92,"y":1,"w":79,"h":83},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":15,"y":0,"w":79,"h":83},
+	"sourceSize": {"w":94,"h":98},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"water splash effect0010.png":
+{
+	"frame": {"x":159,"y":157,"w":51,"h":57},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":27,"y":13,"w":51,"h":57},
+	"sourceSize": {"w":94,"h":98},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"water splash effect0011.png":
+{
+	"frame": {"x":204,"y":218,"w":48,"h":52},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":28,"y":16,"w":48,"h":52},
+	"sourceSize": {"w":94,"h":98},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"water splash effect0012.png":
+{
+	"frame": {"x":212,"y":131,"w":36,"h":51},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":35,"y":15,"w":36,"h":51},
+	"sourceSize": {"w":94,"h":98},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"water splash effect0013.png":
+{
+	"frame": {"x":173,"y":79,"w":29,"h":43},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":39,"y":18,"w":29,"h":43},
+	"sourceSize": {"w":94,"h":98},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"water splash effect0014.png":
+{
+	"frame": {"x":1,"y":267,"w":18,"h":19},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":44,"y":31,"w":18,"h":19},
+	"sourceSize": {"w":94,"h":98},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"water splash effect0015.png":
+{
+	"frame": {"x":212,"y":184,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":37,"y":24,"w":32,"h":32},
+	"sourceSize": {"w":94,"h":98},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"water splash effect0016.png":
+{
+	"frame": {"x":204,"y":79,"w":50,"h":50},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":29,"y":16,"w":50,"h":50},
+	"sourceSize": {"w":94,"h":98},
+	"pivot": {"x":0.5,"y":0.5}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "water-splash.png",
+	"format": "RGBA8888",
+	"size": {"w":255,"h":287},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:d7ddc343e2d44f7655a9b9c799ca3907:fb0a19eaca224384f25e5275e35fd106:fccab561a367ce2e2d490b6982293a38$"
+}
+}
