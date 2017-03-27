@@ -123,6 +123,8 @@ export default class Ship{
         this.stage.addChild(this.container);
 
         requestAnimationFrame(this.update.bind(this));
+
+        return this;
     }
 
     renderStopped(){
@@ -339,14 +341,6 @@ export default class Ship{
 
         delete this.stage.ships[this.id];
 
-        let ships = [];
-        for(let i in this.stage.ships){
-            if(this.stage.ships[i] !== this){
-                ships.push(this.stage.ships[i]);
-            }
-        }
-
-        this.stage.ships = ships;
         this.stage.removeChild(this.container);
 
         expl.onComplete = (() => {
@@ -472,7 +466,9 @@ export default class Ship{
         if(!this.isActive){
             return this;
         }
+        
         this.toAttack = [];
+        console.log(this.toAttack.length);
         let active = this;
         for(let key in this.stage.ships){
             let enemy = this.stage.ships[key];
