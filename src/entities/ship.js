@@ -15,6 +15,8 @@ export default class Ship{
         this.speed      = params.speed   || 1;
         this.damageZone = params.damageZone || 1;
         
+        this.app = params.app;
+
         this.id = params.id; // @todo
 
         this._currentBodyHp = params.bodyHp  || 100;
@@ -30,6 +32,9 @@ export default class Ship{
         this.container.vx = 0;
         this.container.vy = 0;
 
+        this.stageHeight = this.stage.height;
+        this.stageWidth = this.stage.width;
+        console.log(this.stageWidth);
         this.toAttack = {};
         if(params.noAutoRender){
             return;
@@ -122,6 +127,8 @@ export default class Ship{
         this.addInputListeners();
         this.stage.addChild(this.container);
 
+         this.s = false;
+         
         requestAnimationFrame(this.update.bind(this));
 
         return this;
@@ -132,7 +139,7 @@ export default class Ship{
         sprite.anchor.set(0.5, 0.55);
         sprite.scale.set(0.3);
         sprite.rotation = -Math.PI/3;
-        sprite.visible = false;
+        sprite.visible = true;
         return sprite;
     }
 
@@ -148,7 +155,8 @@ export default class Ship{
         sprite.gotoAndStop(7);
         sprite.rotation = -Math.PI/3;
         sprite.animationSpeed = 0.2;
-        sprite.visible = true;
+        sprite.visible = false;
+
         var x = new Graphics();
         x.beginFill(0xffffff);
         x.drawRect();
@@ -329,7 +337,7 @@ export default class Ship{
             frames.push(window.PIXI.Texture.fromFrame('explosion effect00' + key + '.png'));
         }
 
-        let expl = new window.PIXI.extras.AnimatedSprite(frames);
+        let expl = new AnimatedSprite(frames);
         expl.scale.set(0.2);
         expl.anchor.set(0.5);
         expl.position.set(this.container.x, this.container.y);
@@ -398,7 +406,7 @@ export default class Ship{
                 this.container.vx += 0.01;
             }
 
-            if(this.container.vy < 2){
+            if(this.container.vy < 1){
                 this.container.vy += 0.01;
             }
         }
@@ -408,11 +416,11 @@ export default class Ship{
             this.container.vy = 0;
             this.elm.gotoAndStop(7);
             this.isStopping = false;
-            // this.elm.visible = false;
             this.stopped.x = this.elm.x;
             this.stopped.y = this.elm.y;
             this.stopped.rotation = this.elm.rotation;
-            // this.stopped.visible = true;        
+            this.stopped.visible = true;        
+            this.elm.visible = false;
         }else if(!this.playing && this.isAccelerating){
             this.elm.visible = true;
             this.stopped.visible = false; 
@@ -435,30 +443,28 @@ export default class Ship{
             
             this.renderHP();
         }
+    
         
-        // if(this.anim.x > app.view.width - this.anim.width + 100|| this.anim.x < this.anim.width - 100){
-        //     this.anim.vx = 0;
-        // }
+        this.detectEnemies();     
+        if(this.container.y > this.app.view.height - 100 && this.stageHeight + this.stage.position.y >= this.app.view.height && Math.cos(this.elm.rotation) < 0 ){
+            this.stage.position.y = this.stage.position.y + this.container.vy * Math.cos(this.elm.rotation);
+        }else if(this.stage.position.y < 0 && Math.abs(this.stage.position.y + this.container.position.y) <= 100 && Math.cos(this.elm.rotation) > 0){
+            this.stage.position.y = this.stage.position.y + this.container.vy * Math.cos(this.elm.rotation);
+        } 
 
-        // if(this.anim.y > app.view.height - 100 || this.anim.y <  100){
-        //     this.anim.vy = 0;
-        // }
-        // if(bg.position.y > -936 && bg.position.y < 0){
-        //     bg.y += bg.vy;
-        // }
+        if(this.container.x > this.app.view.width - 100 && this.stageWidth + this.stage.position.x >= this.app.view.width && Math.sin(this.elm.rotation) > 0 ){
+            this.stage.position.x = this.stage.position.x - this.container.vx * Math.sin(this.elm.rotation);
+        }else if(this.stage.position.x < 0 && Math.abs(this.stage.position.x + this.container.position.x) <= 100 && Math.sin(this.elm.rotation) < 0){
+            this.stage.position.x = this.stage.position.x - this.container.vx * Math.sin(this.elm.rotation);
+        } 
 
-        // if(bg.position.x > -1248 && bg.position.x < 0){
-        //     bg.x += bg.vx;
-        // }
-
-        // Math.sqrt((x1-x0)*(x1-x0) + (y1-y0)*(y1-y0)) < r
+        this.detectEdge();
         
-        // for(let i = 0; i < this.collidePoints.children.length; i++){
-
-        // }
-        
-        this.detectEnemies();
         requestAnimationFrame(this.update.bind(this));
+    }
+
+    moveStage(){
+        
     }
 
 
@@ -468,7 +474,6 @@ export default class Ship{
         }
         
         this.toAttack = [];
-        console.log(this.toAttack.length);
         let active = this;
         for(let key in this.stage.ships){
             let enemy = this.stage.ships[key];
@@ -492,6 +497,31 @@ export default class Ship{
                 }
                 
             }
+        }
+    }
+
+    detectEdge(){
+        if(this.container.x > this.stageWidth + 100){
+            this.container.x = -100;
+            this.container.vx = 0;
+            this.stage.position.x = 0;
+        }
+
+        if(this.container.x < -100){
+            this.stage.position.x = -1 * (this.stageWidth - this.app.view.width);
+            this.container.x = this.stageWidth + 100;
+        }
+
+
+        if(this.container.y > this.stageHeight + 100){
+            this.container.y = -100;
+            this.container.vy = 0;
+            this.stage.position.y = 0;
+        }
+
+        if(this.container.y < -100){
+            this.stage.position.y = -1 * (this.stageHeight - this.app.view.height);
+            this.container.y = this.stageHeight + 100;
         }
     }
 }
