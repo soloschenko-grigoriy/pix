@@ -30,6 +30,7 @@
     "watchify": "^3.7.0"
   },
   "dependencies": {
-    "pixi.js": "^4.3.4"
+    "pixi.js": "^4.3.4",
+    "underscore": "1.8.3"
   }
 }

@@ -1,4 +1,5 @@
-var Sprite          = window.PIXI.Sprite,
+var _               = window._,
+    Sprite          = window.PIXI.Sprite,
     Loader          = window.PIXI.loader,
     Texture         = window.PIXI.Texture,
     Graphics        = window.PIXI.Graphics,
@@ -457,6 +458,7 @@ export default class Ship{
         this.randomlyRotateInactive();
         this.detectEnemies();     
         this.moveStage();
+        this.analyzeEnemiesForInActive();
         
         if(this.isActive){
             this.detectEdgeForActive();
@@ -465,6 +467,23 @@ export default class Ship{
         }
 
         requestAnimationFrame(this.update.bind(this));
+    }
+
+    analyzeEnemiesForInActive(){
+        if(this.isActive){
+            return this;
+        }
+
+        if(! this.isAccelerating){
+            return this;
+        }
+
+        if(_.size(this.toAttack) > 0){
+            this._rotateDown();
+            _.delay(this.shoot.bind(this), 1000);
+        }else{
+            this._rotateUp();
+        }
     }
 
     randomlyRotateInactive(){
@@ -480,17 +499,15 @@ export default class Ship{
 
         return this;
     }
+
     detectEnemies(){
-        if(!this.isActive){
-            return this;
-        }
-        
-        this.toAttack = [];
         let active = this;
+        this.toAttack = {};
         for(let key in this.stage.ships){
             let enemy = this.stage.ships[key];
             
-            if(!enemy.isActive){
+            
+            if(enemy !== this){
                 enemy.stopped.alpha = 1;
                 enemy.elm.alpha = 1;
 

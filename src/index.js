@@ -34,7 +34,7 @@ function init(){
         app: app
     }).render();
 
-    for(var i = 2; i <= 10; i++){
+    for(var i = 2; i <= 20; i++){
         stage.ships[i] = new Ship({ 
             stage: stage, 
             x: Math.floor(Math.random() * stage.width) + 20, 
