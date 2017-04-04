@@ -34,19 +34,19 @@ function init(){
         app: app
     }).render();
 
-    // for(var i = 2; i <= 10; i++){
-    //     stage.ships[i] = new Ship({ 
-    //         stage: stage, 
-    //         x: Math.floor(Math.random() * 480) + 20, 
-    //         y: Math.floor(Math.random() * 280) + 20, 
-    //         bodyHp: Math.floor(Math.random() * 100) + 0, 
-    //         isEnemy: true, 
-    //         isActive: false, 
-    //         noAutoRender: true, 
-    //         id: i,
-    //         app: app
-    //     }).render();
-    // }
+    for(var i = 2; i <= 10; i++){
+        stage.ships[i] = new Ship({ 
+            stage: stage, 
+            x: Math.floor(Math.random() * stage.width) + 20, 
+            y: Math.floor(Math.random() * stage.height) + 20, 
+            bodyHp: Math.floor(Math.random() * 100) + 0, 
+            isEnemy: true, 
+            isActive: false, 
+            noAutoRender: true, 
+            id: i,
+            app: app
+        }).render();
+    }
 
     let positions = [
         {},

@@ -34,7 +34,7 @@ export default class Ship{
 
         this.stageHeight = this.stage.height;
         this.stageWidth = this.stage.width;
-        console.log(this.stageWidth);
+        
         this.toAttack = {};
         if(params.noAutoRender){
             return;
@@ -126,10 +126,20 @@ export default class Ship{
 
         this.addInputListeners();
         this.stage.addChild(this.container);
-
-         this.s = false;
          
         requestAnimationFrame(this.update.bind(this));
+
+        if(this.isActive){
+            return this;
+        }
+
+        this.isAccelerating = true;
+        this.vx = 0.1;
+        this.vy = 0.1;
+
+        for(let i = 0; i <= Math.floor(Math.random() * (100 - 0 + 1)) + 0; i++){
+            this._rotateLeft();
+        }
 
         return this;
     }
@@ -444,30 +454,32 @@ export default class Ship{
             this.renderHP();
         }
     
-        
+        this.randomlyRotateInactive();
         this.detectEnemies();     
-        if(this.container.y > this.app.view.height - 100 && this.stageHeight + this.stage.position.y >= this.app.view.height && Math.cos(this.elm.rotation) < 0 ){
-            this.stage.position.y = this.stage.position.y + this.container.vy * Math.cos(this.elm.rotation);
-        }else if(this.stage.position.y < 0 && Math.abs(this.stage.position.y + this.container.position.y) <= 100 && Math.cos(this.elm.rotation) > 0){
-            this.stage.position.y = this.stage.position.y + this.container.vy * Math.cos(this.elm.rotation);
-        } 
-
-        if(this.container.x > this.app.view.width - 100 && this.stageWidth + this.stage.position.x >= this.app.view.width && Math.sin(this.elm.rotation) > 0 ){
-            this.stage.position.x = this.stage.position.x - this.container.vx * Math.sin(this.elm.rotation);
-        }else if(this.stage.position.x < 0 && Math.abs(this.stage.position.x + this.container.position.x) <= 100 && Math.sin(this.elm.rotation) < 0){
-            this.stage.position.x = this.stage.position.x - this.container.vx * Math.sin(this.elm.rotation);
-        } 
-
-        this.detectEdge();
+        this.moveStage();
         
+        if(this.isActive){
+            this.detectEdgeForActive();
+        }else{
+            this.detectEdgeForInActive();
+        }
+
         requestAnimationFrame(this.update.bind(this));
     }
 
-    moveStage(){
-        
+    randomlyRotateInactive(){
+        if(this.isActive){
+            return this;
+        }
+        var num = Math.floor(Math.random() * (100000 - 0 + 1));
+        if(num  % 100 === 0){
+            this._rotateLeft();
+        }else if(num  % 200 === 0){
+            this._rotateRight();
+        }
+
+        return this;
     }
-
-
     detectEnemies(){
         if(!this.isActive){
             return this;
@@ -500,7 +512,26 @@ export default class Ship{
         }
     }
 
-    detectEdge(){
+    moveStage(){
+        if(!this.isActive){
+            return this;
+        }
+
+        if(this.container.y > this.app.view.height - 100 && this.stageHeight + this.stage.position.y >= this.app.view.height && Math.cos(this.elm.rotation) < 0 ){
+            this.stage.position.y = this.stage.position.y + this.container.vy * Math.cos(this.elm.rotation);
+        }else if(this.stage.position.y < 0 && Math.abs(this.stage.position.y + this.container.position.y) <= 100 && Math.cos(this.elm.rotation) > 0){
+            this.stage.position.y = this.stage.position.y + this.container.vy * Math.cos(this.elm.rotation);
+        } 
+
+        if(this.container.x > this.app.view.width - 100 && this.stageWidth + this.stage.position.x >= this.app.view.width && Math.sin(this.elm.rotation) > 0 ){
+            this.stage.position.x = this.stage.position.x - this.container.vx * Math.sin(this.elm.rotation);
+        }else if(this.stage.position.x < 0 && Math.abs(this.stage.position.x + this.container.position.x) <= 100 && Math.sin(this.elm.rotation) < 0){
+            this.stage.position.x = this.stage.position.x - this.container.vx * Math.sin(this.elm.rotation);
+        } 
+
+    }
+
+    detectEdgeForActive(){
         if(this.container.x > this.stageWidth + 100){
             this.container.x = -100;
             this.container.vx = 0;
@@ -521,6 +552,27 @@ export default class Ship{
 
         if(this.container.y < -100){
             this.stage.position.y = -1 * (this.stageHeight - this.app.view.height);
+            this.container.y = this.stageHeight + 100;
+        }
+    }
+
+    detectEdgeForInActive(){
+        if(this.container.x > this.stageWidth + 100){
+            this.container.x = -100;
+            this.container.vx = 0;
+        }
+
+        if(this.container.x < -100){
+            this.container.x = this.stageWidth + 100;
+        }
+
+
+        if(this.container.y > this.stageHeight + 100){
+            this.container.y = -100;
+            this.container.vy = 0;
+        }
+
+        if(this.container.y < -100){
             this.container.y = this.stageHeight + 100;
         }
     }
