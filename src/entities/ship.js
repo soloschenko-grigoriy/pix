@@ -206,9 +206,9 @@ export default class Ship{
 
         for(let i in this.cps){
             let cp = new Graphics();
-            cp.beginFill(0x000000);
+            // cp.beginFill(0x000000);
             cp.drawCircle(this.elm.x + this.cps[i].x, this.elm.y + this.cps[i].y, 1);
-            cp.endFill();
+            // cp.endFill();
             container.addChild(cp);
         }
         return container;
@@ -255,11 +255,11 @@ export default class Ship{
     renderObservableZone(){
         var oz = new Container();
         var graphics = new Graphics();
-        var lineColor = 0x000000;
+        // var lineColor = 0x000000;
 
-        graphics.lineStyle(2, lineColor, 0.5);
+        // graphics.lineStyle(2, lineColor, 0.5);
         graphics.drawCircle(this.elm.x, this.elm.y, this.observableZone);
-        graphics.endFill();
+        // graphics.endFill();
         
         
         oz.visible = true;
@@ -503,7 +503,7 @@ export default class Ship{
                 enemy.stopped.alpha = 1;
                 enemy.elm.alpha = 1;
 
-                delete this.nearbyShips[enemy.id];
+                // delete this.nearbyShips[enemy.id];
 
                 for(let i = 0; i < this.cps.length; i++){
                     let x = enemy.container.x + enemy.cps[i].x;
@@ -519,6 +519,8 @@ export default class Ship{
                 
             }
         }
+
+        // console.log(_.size(this.nearbyShips));
     }
 
     moveStage(){
