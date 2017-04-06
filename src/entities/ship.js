@@ -14,7 +14,8 @@ export default class Ship{
         this.sailHp     = params.sailHp  || 100;
         this.bullets    = params.bullets || 0;
         this.speed      = params.speed   || 1;
-        this.damageZone = params.damageZone || 1;
+        this.damageZone = params.damageZone || 100;
+        this.observableZone = params.observableZone || 400;
         
         this.app = params.app;
 
@@ -37,6 +38,7 @@ export default class Ship{
         this.stageWidth = this.stage.width;
         
         this.toAttack = {};
+        this.nearbyShips = {};
         if(params.noAutoRender){
             return;
         }
@@ -109,6 +111,14 @@ export default class Ship{
         this._toAttack = value;
     }
 
+    get nearbyShips(){
+        return this._nearbyShips;
+    }
+
+    set nearbyShips(value){
+        this._nearbyShips = value;
+    }
+
     render(){
         this.isStopping     = false;
         this.isAccelerating = false;
@@ -117,10 +127,12 @@ export default class Ship{
         this.stopped = this.renderStopped();
         this.hp      = this.renderHP();
         this.dz      = this.renderDamageZone();
+        this.oz      = this.renderObservableZone();
         this.collidePoints = this.renderCollidePoints();
         
         this.container.addChild(this.hp);
         this.container.addChild(this.dz);
+        this.container.addChild(this.oz);
         this.container.addChild(this.stopped);
         this.container.addChild(this.elm);
         this.container.addChild(this.collidePoints);
@@ -230,7 +242,7 @@ export default class Ship{
         }
         graphics.beginFill(0xe74c3c, 0.3);
         graphics.lineStyle(2, lineColor, 0.5);
-        graphics.drawCircle(this.elm.x, this.elm.y, 100 * this.damageZone);
+        graphics.drawCircle(this.elm.x, this.elm.y, this.damageZone);
         graphics.endFill();
         
         
@@ -238,6 +250,22 @@ export default class Ship{
         dz.addChild(graphics);
 
         return dz;
+    }
+
+    renderObservableZone(){
+        var oz = new Container();
+        var graphics = new Graphics();
+        var lineColor = 0x000000;
+
+        graphics.lineStyle(2, lineColor, 0.5);
+        graphics.drawCircle(this.elm.x, this.elm.y, this.observableZone);
+        graphics.endFill();
+        
+        
+        oz.visible = true;
+        oz.addChild(graphics);
+
+        return oz;
     }
     
 
@@ -425,6 +453,7 @@ export default class Ship{
         }
     
         this.detectEnemies();     
+        this.detectNearby();
         this.moveStage();
         
         if(this.isActive){
@@ -442,22 +471,49 @@ export default class Ship{
         for(let key in this.stage.ships){
             let enemy = this.stage.ships[key];
             
-            
             if(enemy !== this){
                 enemy.stopped.alpha = 1;
                 enemy.elm.alpha = 1;
 
-                delete this.toAttack[enemy.id];
+                // delete this.toAttack[enemy.id];
 
                 for(let i = 0; i < this.cps.length; i++){
                     let x = enemy.container.x + enemy.cps[i].x;
                     let y = enemy.container.y + enemy.cps[i].y;
                     let d = Math.sqrt(Math.pow(x - active.container.x, 2) + Math.pow(y - active.container.y, 2));
                     
-                    if(d < 100 * active.damageZone){
+                    if(d < active.damageZone){
                         enemy.stopped.alpha = 0.5;
                         enemy.elm.alpha = 0.5;
                         active.toAttack[enemy.id] = enemy;
+                    }
+                }
+                
+            }
+        }
+    }
+
+    detectNearby(){
+        let active = this;
+        this.nearbyShips = {};
+        for(let key in this.stage.ships){
+            let enemy = this.stage.ships[key];
+            
+            if(enemy !== this){
+                enemy.stopped.alpha = 1;
+                enemy.elm.alpha = 1;
+
+                delete this.nearbyShips[enemy.id];
+
+                for(let i = 0; i < this.cps.length; i++){
+                    let x = enemy.container.x + enemy.cps[i].x;
+                    let y = enemy.container.y + enemy.cps[i].y;
+                    let d = Math.sqrt(Math.pow(x - active.container.x, 2) + Math.pow(y - active.container.y, 2));
+                    
+                    if(d < active.observableZone){
+                        enemy.stopped.alpha = 0.5;
+                        enemy.elm.alpha = 0.5;
+                        active.nearbyShips[enemy.id] = enemy;
                     }
                 }
                 

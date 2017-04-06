@@ -11,12 +11,6 @@ export default class AI{
 
     constructor(params){
         this.stage = params.stage;
-        // for(var i in params.ships){
-        //     let ship = params.ships[i];
-        //     if(!ship.isActive){
-        //         this.ships[ship.id] = ship;
-        //     }
-        // }
     }
 
     start(){
