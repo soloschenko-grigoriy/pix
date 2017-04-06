@@ -130,18 +130,6 @@ export default class Ship{
          
         requestAnimationFrame(this.update.bind(this));
 
-        if(this.isActive){
-            return this;
-        }
-
-        this.isAccelerating = true;
-        this.vx = 0.1;
-        this.vy = 0.1;
-
-        for(let i = 0; i <= Math.floor(Math.random() * (100 - 0 + 1)) + 0; i++){
-            this._rotateLeft();
-        }
-
         return this;
     }
 
@@ -274,17 +262,17 @@ export default class Ship{
             e.preventDefault();
 
             if(e.keyCode === 37){ // left 
-                this.rotate('left');
+                this.rotateLeft();
                 // bg.vx = 1;
             }else if(e.keyCode === 38){ // up  
                 // bg.y += 1;
-                this.rotate('up');
+                this.rotateUp();
                 // bg.vx = 1;
             }else if(e.keyCode === 39){ // right
-                this.rotate('right');
+                this.rotateRight();
                 // bg.vx = -1;
             }else if(e.keyCode === 40){ // down
-                this.rotate('down');
+                this.rotateDown();
                 // bg.vy = -1;
             }else if(e.keyCode === 32){ // down
                 this.shoot();
@@ -294,37 +282,18 @@ export default class Ship{
         }); 
     }
 
-    rotate(direction){
-        if(direction == 'left'){
-            return this._rotateLeft();
-        }
-
-        if(direction == 'right'){
-            return this._rotateRight();
-        }
-
-        if(direction == 'up'){
-            return this._rotateUp();
-        }
-
-        if(direction == 'down'){
-            return this._rotateDown();
-        }
-        
-    }
-
-    _rotateLeft(){
+    rotateLeft(){
         this.collidePoints.rotation -= 0.05;
         this.elm.rotation -= 0.05;  
     }
 
-    _rotateRight(){
+    rotateRight(){
         this.collidePoints.rotation += 0.05;
         this.elm.rotation += 0.05;
         
     }
 
-    _rotateUp(){
+    rotateUp(){
         if(this.isAccelerating){ return;}
         this.isStopping = false;          
         this.isAccelerating = true;
@@ -332,7 +301,7 @@ export default class Ship{
         this.vy = 0.5;
     }
 
-    _rotateDown(){
+    rotateDown(){
         if(this.isStopping){return;}
         this.isAccelerating = false;
         this.isStopping = true;
@@ -357,9 +326,9 @@ export default class Ship{
 
         this.stage.addChild(expl);
         expl.play();
-
+        
         delete this.stage.ships[this.id];
-
+        
         this.stage.removeChild(this.container);
 
         expl.onComplete = (() => {
@@ -455,10 +424,8 @@ export default class Ship{
             this.renderHP();
         }
     
-        this.randomlyRotateInactive();
         this.detectEnemies();     
         this.moveStage();
-        this.analyzeEnemiesForInActive();
         
         if(this.isActive){
             this.detectEdgeForActive();
@@ -467,37 +434,6 @@ export default class Ship{
         }
 
         requestAnimationFrame(this.update.bind(this));
-    }
-
-    analyzeEnemiesForInActive(){
-        if(this.isActive){
-            return this;
-        }
-
-        if(! this.isAccelerating){
-            return this;
-        }
-
-        if(_.size(this.toAttack) > 0){
-            this._rotateDown();
-            _.delay(this.shoot.bind(this), 1000);
-        }else{
-            this._rotateUp();
-        }
-    }
-
-    randomlyRotateInactive(){
-        if(this.isActive){
-            return this;
-        }
-        var num = Math.floor(Math.random() * (100000 - 0 + 1));
-        if(num  % 100 === 0){
-            this._rotateLeft();
-        }else if(num  % 200 === 0){
-            this._rotateRight();
-        }
-
-        return this;
     }
 
     detectEnemies(){

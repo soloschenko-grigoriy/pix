@@ -1,10 +1,11 @@
-var app          = new window.PIXI.Application(800, 600, { backgroundColor: 0x1099bb, antialias: true}),
+var _            = window._,
+    app          = new window.PIXI.Application(800, 600, { backgroundColor: 0x1099bb, antialias: true}),
     Container    = window.PIXI.Container,
     Loader       = window.PIXI.loader;
 
 import Ship from './entities/ship';
 import Sea from './entities/sea';
-
+import AI from './ai';
 
 
 Loader
@@ -20,7 +21,7 @@ Loader
 
 function init(){
     var stage = new Container();
-    stage.ships = [];
+    stage.ships = {};
     stage.islands = [];
     app.stage.addChild(stage);    
     
@@ -33,6 +34,9 @@ function init(){
         id: 1,
         app: app
     }).render();
+
+
+    
 
     for(var i = 2; i <= 20; i++){
         stage.ships[i] = new Ship({ 
@@ -47,6 +51,10 @@ function init(){
             app: app
         }).render();
     }
+    
+    new AI({
+        stage: stage
+    }).start();
 
     let positions = [
         {},
