@@ -19,10 +19,10 @@ export default class AI{
             if(ship.isActive){
                 continue;
             }
-            this.randomlyRotateInactive(ship);
+            // this.randomlyRotateInactive(ship);
             this.moveRandomly(ship);
         }
-
+        // ship.elm.rotation = 0;
         requestAnimationFrame(this.update.bind(this));
         
     }
@@ -37,14 +37,48 @@ export default class AI{
         if(!ship.isAccelerating){
             return this;
         }
-
+        ship.rotateDown();
         if(_.size(ship.toAttack) > 0){
             ship.rotateDown();
-            _.delay(function(){
-                ship.shoot();
-            }, 1000);
+            ship.shoot();
+        }else if(_.size(ship.nearbyShips) > 0){
+            this.followActiveShip(ship);
+            ship.rotateUp();
         }else{
             ship.rotateUp();
+        }
+    }
+
+    followActiveShip(ship){
+        var active = _.find(ship.nearbyShips, function(enemy){
+            return enemy.isActive;
+        });
+
+        if(!active){
+            return this;
+        }
+        
+        let toRotate = true;
+        if(ship.bodyHp > 50){
+            for(let i in ship.aimShips){
+                if(ship.aimShips[i] === active){
+                    toRotate = false;
+                    break;
+                }
+            }
+            if(toRotate){
+                ship.rotateLeft();
+            }
+        }else{
+            for(let i in ship.backAimShips){
+                if(ship.backAimShips[i] === active){
+                    toRotate = false;
+                    break;
+                }
+            }
+            if(toRotate){
+                ship.rotateLeft();
+            }
         }
     }
 
@@ -67,7 +101,7 @@ export default class AI{
                 continue;
             }
             
-            this.randomlyRotateInactive(ship);
+            // this.randomlyRotateInactive(ship);
             this.analyzeEnemies(ship);
         }
 

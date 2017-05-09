@@ -30,6 +30,8 @@ function init(){
     stage.ships[1]= new Ship({ 
         stage: stage, 
         isActive: true, 
+        x: 300,
+        y:300,
         noAutoRender: true, 
         id: 1,
         app: app
@@ -38,7 +40,7 @@ function init(){
 
     
 
-    for(var i = 2; i <= 20; i++){
+    for(var i = 2; i <= 10; i++){
         stage.ships[i] = new Ship({ 
             stage: stage, 
             x: Math.floor(Math.random() * stage.width) + 20, 
