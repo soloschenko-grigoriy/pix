@@ -40,12 +40,15 @@ function init(){
 
     
 
-    for(var i = 2; i <= 10; i++){
+    for(var i = 2; i <= 2; i++){
         stage.ships[i] = new Ship({ 
             stage: stage, 
-            x: Math.floor(Math.random() * stage.width) + 20, 
-            y: Math.floor(Math.random() * stage.height) + 20, 
-            bodyHp: Math.floor(Math.random() * 100) + 0, 
+            x: 150,
+            y: 150,
+            // x: Math.floor(Math.random() * stage.width) + 20, 
+            // y: Math.floor(Math.random() * stage.height) + 20, 
+            // bodyHp: Math.floor(Math.random() * 100) + 0, 
+            bodyHp: 10, 
             isEnemy: true, 
             isActive: false, 
             noAutoRender: true, 

@@ -265,7 +265,7 @@ export default class Ship{
     renderAim(){
         var graphics = new Graphics();
 
-        // graphics.beginFill(0xff0000, 0.1);
+        graphics.beginFill(0xff0000, 0);
         // graphics.lineStyle(2, 0x00ff00);
         graphics.moveTo(0,0);
         graphics.arc(0, 0, this.observableZone, -2 * Math.PI/3, -Math.PI/3);
@@ -279,7 +279,7 @@ export default class Ship{
     renderBackAim(){
         var graphics = new Graphics();
 
-        // graphics.beginFill(0xff0000, .1);
+        graphics.beginFill(0xff0000, 0);
         // graphics.lineStyle(2, 0x00ff00);
         graphics.moveTo(0,0);
         graphics.arc(0, 0, this.observableZone, Math.PI/3, -4 * Math.PI/3);
