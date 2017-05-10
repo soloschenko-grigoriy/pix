@@ -16,7 +16,9 @@ export default class Ship{
         this.speed      = params.speed   || 1;
         this.damageZone = params.damageZone || 100;
         this.observableZone = params.observableZone || 300;
-        
+        this.timeToRecharge = params.timeToRecharge || 200;
+        this.timeLeftToShoot = 0;
+
         this.app = params.app;
 
         this.id = params.id; // @todo
@@ -31,17 +33,22 @@ export default class Ship{
         this.container = new Container();
         this.container.x = params.x || 300;
         this.container.y = params.y || 300;
-        this.container.vx = 0;
-        this.container.vy = 0;
+        this.container.vx = 1;
+        this.container.vy = 1;
 
         this.stageHeight = this.stage.height;
         this.stageWidth = this.stage.width;
         
         this.toAttack = {};
         this.nearbyShips = {};
+        
+        this.rotationInc = .01;
+
         if(params.noAutoRender){
             return;
         }
+
+       
 
         this.render(params);
     }
@@ -119,12 +126,35 @@ export default class Ship{
         this._nearbyShips = value;
     }
 
+    get timeToRecharge(){
+        return this._timeToRecharge;
+    }
+
+    set timeToRecharge(value){
+        this._timeToRecharge = value;
+    }
+    
+    get timeLeftToShoot(){
+        return this._timeLeftToShoot;
+    }
+
+    set timeLeftToShoot(value){
+        this._timeLeftToShoot = value;
+    }
+    
+    get rotationInc(){
+        return this._rotationInc;
+    }
+
+    set rotationInc(value){
+        this._rotationInc = value;
+    }
+
     render(){
         this.isStopping     = false;
         this.isAccelerating = false;
 
         this.elm     = this.renderMoving();
-        this.stopped = this.renderStopped();
         this.hp      = this.renderHP();
         this.dz      = this.renderDamageZone();
         this.oz      = this.renderObservableZone();
@@ -135,7 +165,6 @@ export default class Ship{
         this.container.addChild(this.hp);
         this.container.addChild(this.dz);
         this.container.addChild(this.oz);
-        this.container.addChild(this.stopped);
         this.container.addChild(this.elm);
         this.container.addChild(this.collidePoints);
         this.container.addChild(this.aim);
@@ -143,76 +172,61 @@ export default class Ship{
 
         this.addInputListeners();
         this.stage.addChild(this.container);
-         
+        
+        // this helps to pick collide points
+        // this.container.interactive = true;
+        // this.container.on('click', function(e){
+        //     console.log(e.data.originalEvent.clientX - this.x, e.data.originalEvent.clientY - this.y);
+        // });
         requestAnimationFrame(this.update.bind(this));
 
         return this;
     }
 
-    renderStopped(){
-        let sprite = new Sprite(Loader.resources["assets/img/ship0-stop.png"].texture);
-        sprite.anchor.set(0.5, 0.55);
-        sprite.scale.set(0.3);
-        // sprite.rotation = -Math.PI/3;
-        sprite.visible = true;
-        return sprite;
-    }
-
     renderMoving(){
-        let frames = [];
-        for (let i = 1; i < 15; i++) {
-            frames.push(Texture.fromFrame(i + '.png'));
+        let frames = [], prefix = 'Ship_3000';
+        for (let i = 1; i <= 11; i++) {
+            if(i > 9){
+                prefix = 'Ship_300';
+            }
+            frames.push(Texture.fromFrame(prefix + i + '.png'));
         }
 
         let sprite = new AnimatedSprite(frames);
         sprite.anchor.set(0.5, 0.55);
         sprite.scale.set(0.3);
-        sprite.gotoAndStop(7);
-        // sprite.rotation = -Math.PI/3;
         sprite.animationSpeed = 0.2;
-        sprite.visible = false;
-
-        var x = new Graphics();
-        x.beginFill(0xffffff);
-        x.drawRect();
-        x.endFill();
-
+        sprite.play();
         return sprite;
     }
 
     renderCollidePoints(){
         var container = new Container();
         this.cps = [{
-            x: - 22, 
-            y: - 13
+            x: - 0, 
+            y: - 43
         },{
-            x: + 23, 
-            y: + 12
+            x: - 11, 
+            y: - 22
         },{
-            x: - 5, 
-            y: + 8
+            x: + 10, 
+            y: - 22
         },{
-            x: + 5, 
-            y: - 9
+            x: - 11, 
+            y: + 7
         },{
-            x: - 15, 
-            y: 0
+            x: + 10, 
+            y: + 7
         },{
-            x: - 8, 
-            y: - 14
-        },{
-            x: + 8, 
-            y: + 12
-        },{
-            x: + 15, 
-            y: 0
+            x: - 0, 
+            y: + 31
         }];
 
         for(let i in this.cps){
             let cp = new Graphics();
-            // cp.beginFill(0x000000);
+            cp.beginFill(0x000000);
             cp.drawCircle(this.elm.x + this.cps[i].x, this.elm.y + this.cps[i].y, 1);
-            // cp.endFill();
+            cp.endFill();
             container.addChild(cp);
         }
         return container;
@@ -253,9 +267,9 @@ export default class Ship{
 
     renderObservableZone(){
         var graphics = new Graphics();
-        // var lineColor = 0x000000;
+        var lineColor = 0x000000;
 
-        // graphics.lineStyle(2, lineColor, 0.5);
+        graphics.lineStyle(2, lineColor, 0);
         graphics.drawCircle(this.elm.x, this.elm.y, this.observableZone);
         graphics.endFill();
 
@@ -266,7 +280,7 @@ export default class Ship{
         var graphics = new Graphics();
 
         graphics.beginFill(0xff0000, 0);
-        // graphics.lineStyle(2, 0x00ff00);
+        graphics.lineStyle(2, 0x00ff00, 0);
         graphics.moveTo(0,0);
         graphics.arc(0, 0, this.observableZone, -2 * Math.PI/3, -Math.PI/3);
         graphics.lineTo(0, 0);
@@ -274,13 +288,13 @@ export default class Ship{
         
 
         return graphics;
-    }
+    } 
 
     renderBackAim(){
         var graphics = new Graphics();
 
         graphics.beginFill(0xff0000, 0);
-        // graphics.lineStyle(2, 0x00ff00);
+        graphics.lineStyle(2, 0x00ff00, 0);
         graphics.moveTo(0,0);
         graphics.arc(0, 0, this.observableZone, Math.PI/3, -4 * Math.PI/3);
         graphics.lineTo(0, 0);
@@ -312,52 +326,31 @@ export default class Ship{
 
             if(e.keyCode === 37){ // left 
                 this.rotateLeft();
-                // bg.vx = 1;
-            }else if(e.keyCode === 38){ // up  
-                // bg.y += 1;
-                this.rotateUp();
-                // bg.vx = 1;
             }else if(e.keyCode === 39){ // right
                 this.rotateRight();
-                // bg.vx = -1;
-            }else if(e.keyCode === 40){ // down
-                this.rotateDown();
-                // bg.vy = -1;
             }else if(e.keyCode === 32){ // down
                 this.shoot();
-                // bg.vy = -1;
-
             }
         }); 
     }
 
     rotateLeft(){
-        this.collidePoints.rotation -= 0.05;
-        this.aim.rotation -= 0.05;
-        this.backAim.rotation -= 0.05;
-        this.elm.rotation -= 0.05;  
+        var rotationInc = this.isActive ? this.rotationInc * 5 : this.rotationInc;
+
+        this.collidePoints.rotation -= rotationInc;
+        this.aim.rotation           -= rotationInc;
+        this.backAim.rotation       -= rotationInc;
+        this.elm.rotation           -= rotationInc;  
     }
 
     rotateRight(){
-        this.collidePoints.rotation += 0.05;
-        this.aim.rotation += 0.05;
-        this.backAim.rotation += 0.05;
-        this.elm.rotation += 0.05;
+        var rotationInc = this.isActive ? this.rotationInc * 5 : this.rotationInc;
+
+        this.collidePoints.rotation += rotationInc;
+        this.aim.rotation           += rotationInc;
+        this.backAim.rotation       += rotationInc;
+        this.elm.rotation           += rotationInc;
         
-    }
-
-    rotateUp(){
-        if(this.isAccelerating){ return;}
-        this.isStopping = false;          
-        this.isAccelerating = true;
-        this.vx = 0.5;
-        this.vy = 0.5;
-    }
-
-    rotateDown(){
-        if(this.isStopping){return;}
-        this.isAccelerating = false;
-        this.isStopping = true;
     }
 
     destroy(){
@@ -390,6 +383,10 @@ export default class Ship{
     }
 
     shoot(){
+        if(this.timeLeftToShoot > 0){
+            return this;
+        }
+
         for(var i in this.toAttack){
             new Bullet({
                 stage: this.stage,
@@ -400,6 +397,8 @@ export default class Ship{
                 endElm: this.toAttack[i]
             });
         }
+
+        this._timeLeftToShoot = this.timeToRecharge;
         
     }
 
@@ -428,39 +427,7 @@ export default class Ship{
         });
     }
 
-    update(){
-        if(this.isStopping){
-            this.container.vx -= 0.03;
-            this.container.vy -= 0.03;
-        }
-        
-        if(this.isAccelerating){
-            if(this.container.vx < 2){
-                this.container.vx += 0.01;
-            }
-
-            if(this.container.vy < 1){
-                this.container.vy += 0.01;
-            }
-        }
-
-        if((this.container.vx < 0 || this.container.vy < 0) && this.isStopping){
-            this.container.vx = 0;
-            this.container.vy = 0;
-            this.elm.gotoAndStop(7);
-            this.isStopping = false;
-            this.stopped.x = this.elm.x;
-            this.stopped.y = this.elm.y;
-            this.stopped.rotation = this.elm.rotation;
-            this.stopped.visible = true;        
-            this.elm.visible = false;
-        }else if(!this.playing && this.isAccelerating){
-            this.elm.visible = true;
-            this.stopped.visible = false; 
-            this.elm.play();
-        }
-        
-        this.stopped.rotation = this.elm.rotation;
+    update(){        
         this.container.x = this.container.x + this.container.vx * Math.sin(this.elm.rotation);
         this.container.y = this.container.y - this.container.vy * Math.cos(this.elm.rotation);
         
@@ -481,12 +448,15 @@ export default class Ship{
         this.detectNearby();
         this.detectAim(); 
         this.moveStage();
-        
+        this.recharge();
+
         if(this.isActive){
             this.detectEdgeForActive();
         }else{
             this.detectEdgeForInActive();
         }
+
+        
 
         requestAnimationFrame(this.update.bind(this));
     }
@@ -498,7 +468,6 @@ export default class Ship{
             let enemy = this.stage.ships[key];
             
             if(enemy !== this){
-                enemy.stopped.alpha = 1;
                 enemy.elm.alpha = 1;
 
                 // delete this.toAttack[enemy.id];
@@ -509,7 +478,6 @@ export default class Ship{
                     let d = Math.sqrt(Math.pow(x - active.container.x, 2) + Math.pow(y - active.container.y, 2));
                     
                     if(d < active.damageZone){
-                        enemy.stopped.alpha = 0.5;
                         enemy.elm.alpha = 0.5;
                         active.toAttack[enemy.id] = enemy;
                     }
@@ -526,7 +494,6 @@ export default class Ship{
             let enemy = this.stage.ships[key];
             
             if(enemy !== this){
-                enemy.stopped.alpha = 1;
                 enemy.elm.alpha = 1;
 
                 // delete this.nearbyShips[enemy.id];
@@ -537,7 +504,6 @@ export default class Ship{
                     let d = Math.sqrt(Math.pow(x - active.container.x, 2) + Math.pow(y - active.container.y, 2));
                     
                     if(d < active.observableZone){
-                        enemy.stopped.alpha = 0.5;
                         enemy.elm.alpha = 0.5;
                         active.nearbyShips[enemy.id] = enemy;
                     }
@@ -557,7 +523,6 @@ export default class Ship{
             let enemy = this.stage.ships[key];
             
             if(enemy !== this){
-                enemy.stopped.alpha = 1;
                 enemy.elm.alpha = 1;
                 for(let i = 0; i < this.cps.length; i++){
                     let x = enemy.container.x + enemy.cps[i].x;
@@ -598,7 +563,7 @@ export default class Ship{
     detectEdgeForActive(){
         if(this.container.x > this.stageWidth + 100){
             this.container.x = -100;
-            this.container.vx = 0;
+            // this.container.vx = 0;
             this.stage.position.x = 0;
         }
 
@@ -610,7 +575,7 @@ export default class Ship{
 
         if(this.container.y > this.stageHeight + 100){
             this.container.y = -100;
-            this.container.vy = 0;
+            // this.container.vy = 0;
             this.stage.position.y = 0;
         }
 
@@ -623,7 +588,7 @@ export default class Ship{
     detectEdgeForInActive(){
         if(this.container.x > this.stageWidth + 100){
             this.container.x = -100;
-            this.container.vx = 0;
+            // this.container.vx = 0;
         }
 
         if(this.container.x < -100){
@@ -633,11 +598,19 @@ export default class Ship{
 
         if(this.container.y > this.stageHeight + 100){
             this.container.y = -100;
-            this.container.vy = 0;
+            // this.container.vy = 0;
         }
 
         if(this.container.y < -100){
             this.container.y = this.stageHeight + 100;
         }
+    }
+
+    recharge(){
+        if(this.timeLeftToShoot <= 0){
+            return this;
+        }
+
+        this.timeLeftToShoot--;
     }
 }

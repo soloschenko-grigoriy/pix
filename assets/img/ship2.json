@@ -1,0 +1,92 @@
+{"frames": {
+
+"Ship_20001.png":
+{
+	"frame": {"x":435,"y":631,"w":215,"h":303},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":23,"w":215,"h":303},
+	"sourceSize": {"w":215,"h":368}
+},
+"Ship_20002.png":
+{
+	"frame": {"x":435,"y":1,"w":215,"h":315},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":20,"w":215,"h":315},
+	"sourceSize": {"w":215,"h":368}
+},
+"Ship_20003.png":
+{
+	"frame": {"x":218,"y":328,"w":215,"h":308},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":18,"w":215,"h":308},
+	"sourceSize": {"w":215,"h":368}
+},
+"Ship_20004.png":
+{
+	"frame": {"x":435,"y":318,"w":215,"h":311},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":15,"w":215,"h":311},
+	"sourceSize": {"w":215,"h":368}
+},
+"Ship_20005.png":
+{
+	"frame": {"x":1,"y":348,"w":215,"h":303},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":16,"w":215,"h":303},
+	"sourceSize": {"w":215,"h":368}
+},
+"Ship_20006.png":
+{
+	"frame": {"x":218,"y":638,"w":215,"h":303},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":18,"w":215,"h":303},
+	"sourceSize": {"w":215,"h":368}
+},
+"Ship_20007.png":
+{
+	"frame": {"x":1,"y":653,"w":215,"h":303},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":20,"w":215,"h":303},
+	"sourceSize": {"w":215,"h":368}
+},
+"Ship_20008.png":
+{
+	"frame": {"x":218,"y":1,"w":215,"h":325},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":21,"w":215,"h":325},
+	"sourceSize": {"w":215,"h":368}
+},
+"Ship_20009.png":
+{
+	"frame": {"x":1,"y":1,"w":215,"h":345},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":23,"w":215,"h":345},
+	"sourceSize": {"w":215,"h":368}
+},
+"Ship_20010.png":
+{
+	"frame": {"x":1,"y":1,"w":215,"h":345},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":23,"w":215,"h":345},
+	"sourceSize": {"w":215,"h":368}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "ship2.png",
+	"format": "RGBA8888",
+	"size": {"w":651,"h":957},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:6a6c018dd16d559c512ddcbddb01cb3e:d8a453c85fb98bd4b6073d4b2a0314fe:6fa8b9f05d9110457dc8e29b909b20e5$"
+}
+}

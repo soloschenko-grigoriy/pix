@@ -1,0 +1,111 @@
+{"frames": {
+
+"Ship_30001.png":
+{
+	"frame": {"x":1244,"y":1,"w":211,"h":303},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":15,"w":211,"h":303},
+	"sourceSize": {"w":211,"h":340},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Ship_30002.png":
+{
+	"frame": {"x":319,"y":1,"w":211,"h":310},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":13,"w":211,"h":310},
+	"sourceSize": {"w":211,"h":340},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Ship_30003.png":
+{
+	"frame": {"x":1549,"y":1,"w":211,"h":303},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":12,"w":211,"h":303},
+	"sourceSize": {"w":211,"h":340},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Ship_30004.png":
+{
+	"frame": {"x":938,"y":1,"w":211,"h":304},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":10,"w":211,"h":304},
+	"sourceSize": {"w":211,"h":340},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Ship_30005.png":
+{
+	"frame": {"x":1,"y":214,"w":211,"h":303},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":9,"w":211,"h":303},
+	"sourceSize": {"w":211,"h":340},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Ship_30006.png":
+{
+	"frame": {"x":631,"y":1,"w":211,"h":305},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":7,"w":211,"h":305},
+	"sourceSize": {"w":211,"h":340},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Ship_30007.png":
+{
+	"frame": {"x":306,"y":214,"w":211,"h":303},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":9,"w":211,"h":303},
+	"sourceSize": {"w":211,"h":340},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Ship_30008.png":
+{
+	"frame": {"x":611,"y":214,"w":211,"h":303},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":10,"w":211,"h":303},
+	"sourceSize": {"w":211,"h":340},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Ship_30009.png":
+{
+	"frame": {"x":916,"y":214,"w":211,"h":303},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":12,"w":211,"h":303},
+	"sourceSize": {"w":211,"h":340},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Ship_30010.png":
+{
+	"frame": {"x":1221,"y":214,"w":211,"h":303},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":13,"w":211,"h":303},
+	"sourceSize": {"w":211,"h":340},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"Ship_30011.png":
+{
+	"frame": {"x":1,"y":1,"w":211,"h":316},
+	"rotated": true,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":15,"w":211,"h":316},
+	"sourceSize": {"w":211,"h":340},
+	"pivot": {"x":0.5,"y":0.5}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "ship3.png",
+	"format": "RGBA8888",
+	"size": {"w":1761,"h":426},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:553b937a406e96497d1b38d0c7d4f3d5:fb12d32884a810eabb843406d54a74ce:a8a092a93df1e0a90d2e9ea666aaf6d5$"
+}
+}

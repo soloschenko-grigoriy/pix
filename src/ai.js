@@ -19,33 +19,17 @@ export default class AI{
             if(ship.isActive){
                 continue;
             }
-            // this.randomlyRotateInactive(ship);
-            this.moveRandomly(ship);
         }
-        // ship.elm.rotation = 0;
+        
         requestAnimationFrame(this.update.bind(this));
         
     }
 
-    moveRandomly(ship){
-        ship.isAccelerating = true;
-        ship.vx = 0.1;
-        ship.vy = 0.1;
-    }
-
     analyzeEnemies(ship){
-        if(!ship.isAccelerating){
-            return this;
-        }
-        ship.rotateDown();
         if(_.size(ship.toAttack) > 0){
-            ship.rotateDown();
             ship.shoot();
         }else if(_.size(ship.nearbyShips) > 0){
             this.followActiveShip(ship);
-            ship.rotateUp();
-        }else{
-            ship.rotateUp();
         }
     }
 
@@ -101,7 +85,6 @@ export default class AI{
                 continue;
             }
             
-            // this.randomlyRotateInactive(ship);
             this.analyzeEnemies(ship);
         }
 
