@@ -1,6 +1,7 @@
 var _            = window._,
     app          = new window.PIXI.Application(800, 600, { backgroundColor: 0x1099bb, antialias: true}),
     Container    = window.PIXI.Container,
+    Graphics     = window.PIXI.Graphics,
     Sprite       = window.PIXI.Sprite,
     Loader       = window.PIXI.loader;
 
@@ -10,7 +11,7 @@ import AI from './ai';
 
 
 Loader
-    .add('assets/img/sea.png')
+    .add('assets/img/sea2.png')
     .add('assets/img/ship2.json')
     .add('assets/img/ship3.json')
     .add('assets/img/cannon-ball.png')
@@ -27,15 +28,24 @@ function init(){
     var stage = new Container();
     stage.ships = {};
     stage.islands = [];
+    stage.sea = new Sea({ stage: stage });
     app.stage.addChild(stage);    
     
-    stage.sea = new Sea({ stage: stage });
+    
+    var area = new Graphics();
+    area.lineStyle(2, 0xffffff, 1);
+    // area.beginFill(0x000000, .1);
+    area.drawCircle(stage.width/2, stage.height/2, stage.width/2 - 100);
+    area.endFill();
+    stage.area = area;
+    stage.addChild(stage.area);
+
 
     stage.ships[1] = new Ship({ 
         stage: stage, 
         isActive: true, 
-        x: 400,
-        y: 400,
+        x: 750,
+        y: 300,
         noAutoRender: true, 
         id: 1,
         app: app
@@ -44,11 +54,11 @@ function init(){
 
     
 
-    for(var i = 2; i <= 2; i++){
+    for(var i = 2; i <= 1; i++){
         stage.ships[i] = new Ship({ 
             stage: stage, 
-            x: 200,
-            y: 200,
+            x: 500,
+            y: 500,
             bodyHp: 70, 
             // x: Math.floor(Math.random() * stage.width) + 20, 
             // y: Math.floor(Math.random() * stage.height) + 20, 
@@ -68,7 +78,7 @@ function init(){
 
     let positions = [
         {},
-        { x: 100, y: 100 },
+        
         { x: 300, y: 450 },
         { x: 800, y: 800 },
         { x: 300, y: 1000 },
@@ -78,6 +88,7 @@ function init(){
         { x: 1100, y: 500 },
         { x: 1200, y: 900 },
         { x: 1500, y: 1000 },
+        { x: 1500, y: 1200 },
     ]
 
     for(let i = 1; i <= 10; i++){

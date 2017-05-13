@@ -3,7 +3,7 @@ var Sprite = window.PIXI.Sprite,
 
 export default class Sea{
     constructor(params){
-        this.elm = new Sprite(Loader.resources["assets/img/sea.png"].texture);
+        this.elm = new Sprite(Loader.resources["assets/img/sea2.png"].texture);
         this.elm.position.x = 0;
         this.elm.position.y = 0;
 

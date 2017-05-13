@@ -15,7 +15,7 @@ export default class Ship{
         this.bullets            = params.bullets         || 0;
         this.speed              = params.speed           || 1;
         this.damageZone         = params.damageZone      || 100;
-        this.observableZone     = params.observableZone  || 300;
+        this.observableZone     = params.observableZone  || 1000;
         this.timeToRecharge     = params.timeToRecharge  || 200;
         this.timeLeftToShoot    = params.timeLeftToShoot || 0;
         this.rotationInc        = params.rotationInc     || .01;
@@ -41,8 +41,6 @@ export default class Ship{
         this.toAttack = {};
         this.nearbyShips = {};
         
-        
-
         if(params.noAutoRender){
             return;
         }
@@ -156,7 +154,7 @@ export default class Ship{
         this.dz      = this.renderDamageZone();
         this.oz      = this.renderObservableZone();
         this.collidePoints = this.renderCollidePoints();
-        this.aim     = this.renderAim();
+        this.aim     = this.renderAim(); 
         this.backAim = this.renderBackAim();
         
         this.container.addChild(this.hp);
@@ -220,8 +218,8 @@ export default class Ship{
 
         for(let i in this.cps){
             let cp = new Graphics();
-            // cp.beginFill(0x000000);
-            cp.drawCircle(this.elm.x + this.cps[i].x, this.elm.y + this.cps[i].y, 1);
+            cp.beginFill(0x000000);
+            cp.drawCircle(this.cps[i].x, this.cps[i].y, 1);
             cp.endFill();
             container.addChild(cp);
         }
@@ -265,7 +263,7 @@ export default class Ship{
         var graphics = new Graphics();
         var lineColor = 0x000000;
 
-        graphics.lineStyle(2, lineColor, 0);
+        graphics.lineStyle(2, lineColor, 1);
         graphics.drawCircle(this.elm.x, this.elm.y, this.observableZone);
         graphics.endFill();
 
@@ -276,7 +274,7 @@ export default class Ship{
         var graphics = new Graphics();
 
         graphics.beginFill(0xff0000, 0);
-        graphics.lineStyle(2, 0x00ff00, 0);
+        graphics.lineStyle(2, 0x00ff00, 1);
         graphics.moveTo(0,0);
         graphics.arc(0, 0, this.observableZone, -2 * Math.PI/3, -Math.PI/3);
         graphics.lineTo(0, 0);
@@ -290,7 +288,7 @@ export default class Ship{
         var graphics = new Graphics();
 
         graphics.beginFill(0xff0000, 0);
-        graphics.lineStyle(2, 0x00ff00, 0);
+        graphics.lineStyle(2, 0x00ff00, 1);
         graphics.moveTo(0,0);
         graphics.arc(0, 0, this.observableZone, Math.PI/3, -4 * Math.PI/3);
         graphics.lineTo(0, 0);
@@ -427,14 +425,7 @@ export default class Ship{
         this.detectAim(); 
         this.moveStage();
         this.recharge();
-
-        if(this.isActive){
-            this.detectEdgeForActive();
-        }else{
-            this.detectEdgeForInActive();
-        }
-
-        
+        this.detectEdge();
 
         requestAnimationFrame(this.update.bind(this));
     }
@@ -524,59 +515,83 @@ export default class Ship{
             return this;
         }
 
-        if(this.container.y > this.app.view.height - this.observableZone && this.stageHeight + this.stage.position.y >= this.app.view.height && Math.cos(this.elm.rotation) < 0 ){
+        var deltaW = this.app.view.width/2,
+            deltaH = this.app.view.height/2;
+        if(this.container.y > this.app.view.height - deltaH && this.stageHeight + this.stage.position.y >= this.app.view.height && Math.cos(this.elm.rotation) < 0 ){
             this.stage.position.y = this.stage.position.y + Math.cos(this.elm.rotation);
-        }else if(this.stage.position.y < 0 && Math.abs(this.stage.position.y + this.container.position.y) <= this.observableZone && Math.cos(this.elm.rotation) > 0){
+        }else if(this.stage.position.y < 0 && Math.abs(this.stage.position.y + this.container.position.y) <= deltaH && Math.cos(this.elm.rotation) > 0){
             this.stage.position.y = this.stage.position.y + Math.cos(this.elm.rotation);
         } 
 
-        if(this.container.x > this.app.view.width - this.observableZone && this.stageWidth + this.stage.position.x >= this.app.view.width && Math.sin(this.elm.rotation) > 0 ){
+        if(this.container.x > this.app.view.width - deltaW && this.stageWidth + this.stage.position.x >= this.app.view.width && Math.sin(this.elm.rotation) > 0 ){
             this.stage.position.x = this.stage.position.x - Math.sin(this.elm.rotation);
-        }else if(this.stage.position.x < 0 && Math.abs(this.stage.position.x + this.container.position.x) <= this.observableZone && Math.sin(this.elm.rotation) < 0){
+        }else if(this.stage.position.x < 0 && Math.abs(this.stage.position.x + this.container.position.x) <= deltaW && Math.sin(this.elm.rotation) < 0){
             this.stage.position.x = this.stage.position.x - Math.sin(this.elm.rotation);
         } 
 
     }
 
-    detectEdgeForActive(){
-        if(this.container.x > this.stageWidth + 100){
-            this.container.x = -100;
-            this.stage.position.x = 0;
-        }
+    detectEdge(){
+        var centerX = this.stageWidth/2,
+            centerY = this.stageHeight/2;
 
-        if(this.container.x < -100){
-            this.stage.position.x = -1 * (this.stageWidth - this.app.view.width);
-            this.container.x = this.stageWidth + 100;
-        }
+        var d = Math.sqrt(Math.pow(this.container.x - centerX, 2) + Math.pow(this.container.y - centerY, 2));
+        if(d >= this.stageWidth/2 - 100){
+            this.rotateLeft();
+            // detec which board is closer to the boarder
+            // let dL = Math.sqrt(Math.pow(this.container.x + this.cps[1].x - centerX, 2) + Math.pow(this.container.y + this.cps[1].y - centerY, 2));
+            // let dR = Math.sqrt(Math.pow(this.container.x + this.cps[2].x - centerX, 2) + Math.pow(this.container.y + this.cps[2].y - centerY, 2));
+            // console.log(dL, dR);
+            // if(dR < dL){
+            //     this.rotateLeft();
+            // }else{
+            //     this.rotateRight();
+            // }
+            
+            // let rotation = this.elm.rotation;
+            // if(Math.abs(rotation) > 2 * Math.PI){
+            //     rotation = rotation % (2 * Math.PI);
+            // }
 
+            // if(rotation >= 0 && rotation <= Math.PI / 2){
+            //     console.log('left 1');
+            //     this.rotateLeft();
+            // }else{
+            //     console.log('right 1');
+            //     this.rotateRight();                
+            // }else if(rotation >= Math.PI/2){
+            //     console.log('right 2');
+            //     this.rotateRight();                
+            // }else{
+            //     console.log('left 2');
+            //     this.rotateLeft();
+            // }
 
-        if(this.container.y > this.stageHeight + 100){
-            this.container.y = -100;
-            this.stage.position.y = 0;
-        }
-
-        if(this.container.y < -100){
-            this.stage.position.y = -1 * (this.stageHeight - this.app.view.height);
-            this.container.y = this.stageHeight + 100;
-        }
-    }
-
-    detectEdgeForInActive(){
-        if(this.container.x > this.stageWidth + 100){
-            this.container.x = -100;
-        }
-
-        if(this.container.x < -100){
-            this.container.x = this.stageWidth + 100;
-        }
-
-
-        if(this.container.y > this.stageHeight + 100){
-            this.container.y = -100;
-        }
-
-        if(this.container.y < -100){
-            this.container.y = this.stageHeight + 100;
+            // console.log(dL, dR);
+            // if(dL < dR){
+            //     if(rotation >= -Math.PI/2 && rotation <= Math.PI/2){
+            //         console.log('left 1');
+            //         this.rotateLeft();
+            //     }else{
+            //         console.log('right 1');
+            //         this.rotateRight();
+            //     }
+                
+            // }else{
+            //     if(rotation >= -Math.PI/2 && rotation <= Math.PI/2){
+            //         console.log('right 2');
+            //         this.rotateRight();
+            //     }else{
+            //         console.log('left 2');
+            //         this.rotateLeft();
+            //     }
+                
+            // }
+            // console.log(this.container.x + this.cps[1].x, dL, dR, dR > dL);
+            // 
+            // console.log(this.elm.rotation, rotation <= Math.PI)
+            // console.log(rotation);
+           
         }
     }
 
