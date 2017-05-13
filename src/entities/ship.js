@@ -10,45 +10,42 @@ import Bullet from './bullet';
 
 export default class Ship{
     constructor(params){
-        this.bodyHp     = params.bodyHp  || 100;
-        this.sailHp     = params.sailHp  || 100;
-        this.bullets    = params.bullets || 0;
-        this.speed      = params.speed   || 1;
-        this.damageZone = params.damageZone || 100;
-        this.observableZone = params.observableZone || 300;
-        this.timeToRecharge = params.timeToRecharge || 200;
-        this.timeLeftToShoot = 0;
+        this.bodyHp             = params.bodyHp          || 100;
+        this.sailHp             = params.sailHp          || 100;
+        this.bullets            = params.bullets         || 0;
+        this.speed              = params.speed           || 1;
+        this.damageZone         = params.damageZone      || 100;
+        this.observableZone     = params.observableZone  || 300;
+        this.timeToRecharge     = params.timeToRecharge  || 200;
+        this.timeLeftToShoot    = params.timeLeftToShoot || 0;
+        this.rotationInc        = params.rotationInc     || .01;
 
-        this.app = params.app;
-
-        this.id = params.id; // @todo
+        this.id     = params.id; // @todo
+        this.app    = params.app;
+        this.stage  = params.stage;
 
         this._currentBodyHp = params.bodyHp  || 100;
 
-        this.isEnemy = params.isEnemy || false;
+        this.isEnemy  = params.isEnemy || false;
         this.isActive = params.isActive || false;
         
-        this.stage = params.stage;
 
         this.container = new Container();
         this.container.x = params.x || 300;
         this.container.y = params.y || 300;
-        this.container.vx = 1;
-        this.container.vy = 1;
-
+        this.container.vrotation = params.rotation || 0;
+        
         this.stageHeight = this.stage.height;
-        this.stageWidth = this.stage.width;
+        this.stageWidth  = this.stage.width;
         
         this.toAttack = {};
         this.nearbyShips = {};
         
-        this.rotationInc = .01;
+        
 
         if(params.noAutoRender){
             return;
         }
-
-       
 
         this.render(params);
     }
@@ -170,7 +167,6 @@ export default class Ship{
         this.container.addChild(this.aim);
         this.container.addChild(this.backAim);
 
-        this.addInputListeners();
         this.stage.addChild(this.container);
         
         // this helps to pick collide points
@@ -224,7 +220,7 @@ export default class Ship{
 
         for(let i in this.cps){
             let cp = new Graphics();
-            cp.beginFill(0x000000);
+            // cp.beginFill(0x000000);
             cp.drawCircle(this.elm.x + this.cps[i].x, this.elm.y + this.cps[i].y, 1);
             cp.endFill();
             container.addChild(cp);
@@ -316,41 +312,12 @@ export default class Ship{
         return this;
     }
 
-    addInputListeners(){
-        if(!this.isActive){
-            return this;
-        }
-        document.addEventListener('keydown', (e) => {
-            e.stopPropagation();
-            e.preventDefault();
-
-            if(e.keyCode === 37){ // left 
-                this.rotateLeft();
-            }else if(e.keyCode === 39){ // right
-                this.rotateRight();
-            }else if(e.keyCode === 32){ // down
-                this.shoot();
-            }
-        }); 
-    }
-
     rotateLeft(){
-        var rotationInc = this.isActive ? this.rotationInc * 5 : this.rotationInc;
-
-        this.collidePoints.rotation -= rotationInc;
-        this.aim.rotation           -= rotationInc;
-        this.backAim.rotation       -= rotationInc;
-        this.elm.rotation           -= rotationInc;  
+        this.container.vrotation = -this.rotationInc;
     }
 
     rotateRight(){
-        var rotationInc = this.isActive ? this.rotationInc * 5 : this.rotationInc;
-
-        this.collidePoints.rotation += rotationInc;
-        this.aim.rotation           += rotationInc;
-        this.backAim.rotation       += rotationInc;
-        this.elm.rotation           += rotationInc;
-        
+        this.container.vrotation = this.rotationInc;
     }
 
     destroy(){
@@ -427,9 +394,20 @@ export default class Ship{
         });
     }
 
-    update(){        
-        this.container.x = this.container.x + this.container.vx * Math.sin(this.elm.rotation);
-        this.container.y = this.container.y - this.container.vy * Math.cos(this.elm.rotation);
+    update(){
+        this.collidePoints.rotation += this.container.vrotation;
+        this.aim.rotation           += this.container.vrotation;
+        this.backAim.rotation       += this.container.vrotation;
+        this.elm.rotation           += this.container.vrotation;
+
+        if(this.container.vrotation > 0){
+            this.container.vrotation -= 0.0001;
+        }else if(this.container.vrotation < 0){
+            this.container.vrotation += 0.0001;
+        }
+
+        this.container.x = this.container.x + Math.sin(this.elm.rotation);
+        this.container.y = this.container.y - Math.cos(this.elm.rotation);
         
         if(this.bodyHp !== this._currentBodyHp){ // hp been changed
             if(this.bodyHp <= 0){
@@ -547,15 +525,15 @@ export default class Ship{
         }
 
         if(this.container.y > this.app.view.height - this.observableZone && this.stageHeight + this.stage.position.y >= this.app.view.height && Math.cos(this.elm.rotation) < 0 ){
-            this.stage.position.y = this.stage.position.y + this.container.vy * Math.cos(this.elm.rotation);
+            this.stage.position.y = this.stage.position.y + Math.cos(this.elm.rotation);
         }else if(this.stage.position.y < 0 && Math.abs(this.stage.position.y + this.container.position.y) <= this.observableZone && Math.cos(this.elm.rotation) > 0){
-            this.stage.position.y = this.stage.position.y + this.container.vy * Math.cos(this.elm.rotation);
+            this.stage.position.y = this.stage.position.y + Math.cos(this.elm.rotation);
         } 
 
         if(this.container.x > this.app.view.width - this.observableZone && this.stageWidth + this.stage.position.x >= this.app.view.width && Math.sin(this.elm.rotation) > 0 ){
-            this.stage.position.x = this.stage.position.x - this.container.vx * Math.sin(this.elm.rotation);
+            this.stage.position.x = this.stage.position.x - Math.sin(this.elm.rotation);
         }else if(this.stage.position.x < 0 && Math.abs(this.stage.position.x + this.container.position.x) <= this.observableZone && Math.sin(this.elm.rotation) < 0){
-            this.stage.position.x = this.stage.position.x - this.container.vx * Math.sin(this.elm.rotation);
+            this.stage.position.x = this.stage.position.x - Math.sin(this.elm.rotation);
         } 
 
     }
@@ -563,7 +541,6 @@ export default class Ship{
     detectEdgeForActive(){
         if(this.container.x > this.stageWidth + 100){
             this.container.x = -100;
-            // this.container.vx = 0;
             this.stage.position.x = 0;
         }
 
@@ -575,7 +552,6 @@ export default class Ship{
 
         if(this.container.y > this.stageHeight + 100){
             this.container.y = -100;
-            // this.container.vy = 0;
             this.stage.position.y = 0;
         }
 
@@ -588,7 +564,6 @@ export default class Ship{
     detectEdgeForInActive(){
         if(this.container.x > this.stageWidth + 100){
             this.container.x = -100;
-            // this.container.vx = 0;
         }
 
         if(this.container.x < -100){
@@ -598,7 +573,6 @@ export default class Ship{
 
         if(this.container.y > this.stageHeight + 100){
             this.container.y = -100;
-            // this.container.vy = 0;
         }
 
         if(this.container.y < -100){

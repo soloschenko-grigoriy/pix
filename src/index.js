@@ -1,6 +1,7 @@
 var _            = window._,
     app          = new window.PIXI.Application(800, 600, { backgroundColor: 0x1099bb, antialias: true}),
     Container    = window.PIXI.Container,
+    Sprite       = window.PIXI.Sprite,
     Loader       = window.PIXI.loader;
 
 import Ship from './entities/ship';
@@ -17,6 +18,9 @@ Loader
     .add('assets/img/expl2.json')
     .add('assets/img/expl3.json')
     .add('assets/img/islands.json')
+    .add('assets/img/ui/fire.png')
+    .add('assets/img/ui/left.png')
+    .add('assets/img/ui/right.png')
     .load(init);
 
 function init(){
@@ -27,7 +31,7 @@ function init(){
     
     stage.sea = new Sea({ stage: stage });
 
-    stage.ships[1]= new Ship({ 
+    stage.ships[1] = new Ship({ 
         stage: stage, 
         isActive: true, 
         x: 400,
@@ -76,14 +80,76 @@ function init(){
         { x: 1500, y: 1000 },
     ]
 
-    // for(let i = 1; i <= 10; i++){
-    //     let island = new window.PIXI.Sprite(window.PIXI.Texture.fromFrame('island_' + i + '.png'));
-    //     island.anchor.set(0.5, 0.5);
-    //     island.scale.set(0.5);
-    //     island.position.set(positions[i].x, positions[i].y);
-    //     stage.addChild(island);
-    //     stage.islands.push(island);
-    // }
+    for(let i = 1; i <= 10; i++){
+        let island = new window.PIXI.Sprite(window.PIXI.Texture.fromFrame('island_' + i + '.png'));
+        island.anchor.set(0.5, 0.5);
+        island.scale.set(0.5);
+        island.position.set(positions[i].x, positions[i].y);
+        stage.addChild(island);
+        stage.islands.push(island);
+    }
+
+    var active = _.find(stage.ships, (ship) => {
+        return ship.isActive;
+    });
+
+    var leftDownTimeout, rightDownTimeout;
+    var ui = new Container();
+    var fireButton = new Sprite.fromImage('assets/img/ui/fire.png');
+    fireButton.anchor.set(0.5);
+    fireButton.scale.set(0.5);
+    fireButton.position.set(750, 550);
+    fireButton.interactive = true;
+    fireButton.buttonMode = true;
+    fireButton.on('click', () => {
+        active.shoot();
+    });
+
+    ui.addChild(fireButton);
+
+    var leftButton = new Sprite.fromImage('assets/img/ui/left.png');
+    leftButton.anchor.set(0.5);
+    leftButton.scale.set(0.5);
+    leftButton.position.set(50, 550);
+    leftButton.interactive = true;
+    leftButton.buttonMode = true;
+    leftButton.on('mousedown', () => {
+        clearInterval(leftDownTimeout);
+        clearInterval(rightDownTimeout);
+        leftDownTimeout = setInterval(function(){
+            active.rotateLeft();
+        }, 100);
+        
+    });
+    leftButton.on('mouseup', () => {
+        clearInterval(leftDownTimeout);
+        clearInterval(rightDownTimeout);
+    });
+    
+    ui.addChild(leftButton);
+
+    var rightButton = new Sprite.fromImage('assets/img/ui/right.png');
+    rightButton.anchor.set(0.5);
+    rightButton.scale.set(0.5);
+    rightButton.position.set(130, 550);
+    rightButton.interactive = true;
+    rightButton.buttonMode = true;
+    rightButton.on('mousedown', () => {
+        clearInterval(rightDownTimeout);
+        clearInterval(leftDownTimeout);
+        rightDownTimeout = setInterval(function(){
+            active.rotateRight();
+        }, 100);
+
+    });
+
+    rightButton.on('mouseup', () => {
+        clearInterval(rightDownTimeout);
+        clearInterval(leftDownTimeout);
+    });
+    
+    ui.addChild(rightButton);
+    app.stage.addChild(ui);    
 
     document.body.appendChild(app.view);
 }
