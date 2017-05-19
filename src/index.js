@@ -6,6 +6,7 @@ var _            = window._,
     Loader       = window.PIXI.loader;
 
 import Ship from './entities/ship';
+import Island from './entities/island';
 import Sea from './entities/sea';
 import AI from './ai';
 
@@ -34,7 +35,6 @@ function init(){
     
     var area = new Graphics();
     area.lineStyle(2, 0xffffff, 1);
-    // area.beginFill(0x000000, .1);
     area.drawCircle(stage.width/2, stage.height/2, stage.width/2 - 100);
     area.endFill();
     stage.area = area;
@@ -44,25 +44,22 @@ function init(){
     stage.ships[1] = new Ship({ 
         stage: stage, 
         isActive: true, 
-        x: 750,
-        y: 300,
+        x: 350,
+        y: 350,
         noAutoRender: true, 
         id: 1,
         app: app
     }).render();
 
-
-    
-
     for(var i = 2; i <= 1; i++){
         stage.ships[i] = new Ship({ 
             stage: stage, 
-            x: 500,
-            y: 500,
-            bodyHp: 70, 
-            // x: Math.floor(Math.random() * stage.width) + 20, 
-            // y: Math.floor(Math.random() * stage.height) + 20, 
-            // bodyHp: Math.floor(Math.random() * 100) + 0, 
+            // x: 500,
+            // y: 500,
+            // bodyHp: 70, 
+            x: Math.floor(Math.random() * stage.width) + 20, 
+            y: Math.floor(Math.random() * stage.height) + 20, 
+            bodyHp: Math.floor(Math.random() * 100) + 0, 
             
             isEnemy: true, 
             isActive: false, 
@@ -76,29 +73,28 @@ function init(){
         stage: stage
     }).start();
 
-    let positions = [
-        {},
-        
-        { x: 300, y: 450 },
-        { x: 800, y: 800 },
-        { x: 300, y: 1000 },
-        { x: 500, y: 1200 },
-        { x: 200, y: 1400 },
-        { x: 800, y: 200 },
-        { x: 1100, y: 500 },
-        { x: 1200, y: 900 },
-        { x: 1500, y: 1000 },
-        { x: 1500, y: 1200 },
-    ]
+    let islands = [        
+        { x: 300, y: 550, bodyR: 100 },
+        { x: 800, y: 800, bodyR: 100 },
+        { x: 50, y: 120, bodyR: 100 },
+        { x: 800, y: 200, bodyR: 70 },
+        { x: 1100, y: 500, bodyR: 70 },
+        { x: 1200, y: 900, bodyR: 70 }
+    ];
 
-    for(let i = 1; i <= 10; i++){
-        let island = new window.PIXI.Sprite(window.PIXI.Texture.fromFrame('island_' + i + '.png'));
-        island.anchor.set(0.5, 0.5);
-        island.scale.set(0.5);
-        island.position.set(positions[i].x, positions[i].y);
-        stage.addChild(island);
-        stage.islands.push(island);
-    }
+    stage.islands = [];
+    islands.forEach((island, i) => {
+        stage.islands.push(new Island({
+            app: app,
+            stage: stage,
+            position: {
+                x: island.x,
+                y: island.y
+            },
+            bodyR: island.bodyR,
+            imageIndex: i
+        }));
+    });
 
     var active = _.find(stage.ships, (ship) => {
         return ship.isActive;

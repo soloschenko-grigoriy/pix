@@ -43,7 +43,7 @@ export default class AI{
         }
         
         let toRotate = true;
-        if(ship.bodyHp > 50){
+        // if(ship.bodyHp > 50){
             for(let i in ship.aimShips){
                 if(ship.aimShips[i] === active){
                     toRotate = false;
@@ -53,17 +53,17 @@ export default class AI{
             if(toRotate){
                 ship.rotateLeft();
             }
-        }else{
-            for(let i in ship.backAimShips){
-                if(ship.backAimShips[i] === active){
-                    toRotate = false;
-                    break;
-                }
-            }
-            if(toRotate){
-                ship.rotateLeft();
-            }
-        }
+        // }else{
+        //     for(let i in ship.backAimShips){
+        //         if(ship.backAimShips[i] === active){
+        //             toRotate = false;
+        //             break;
+        //         }
+        //     }
+        //     if(toRotate){
+        //         ship.rotateLeft();
+        //     }
+        // }
     }
 
     randomlyRotateInactive(ship){
